@@ -1,0 +1,19 @@
+{
+  "name": "ImgPress — 무료 온라인 이미지 압축",
+  "short_name": "ImgPress",
+  "description": "이미지를 브라우저에서 직접 압축합니다. 서버 전송 없음. 완전 무료.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080b12",
+  "theme_color": "#e8a030",
+  "orientation": "any",
+  "categories": ["utilities", "photo"],
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ]
+}

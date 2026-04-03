@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { formatBytes, compressionRatio } from '../utils/imageProcessor';
+import { useI18n } from '../i18n/useI18n';
 
 interface Props {
   originalUrl: string;
@@ -21,6 +22,7 @@ export default function CompareModal({
   processedWidth, processedHeight,
   fileName, onClose,
 }: Props) {
+  const { t } = useI18n();
   const [showOriginal, setShowOriginal] = useState(false);
   const ratio = compressionRatio(originalSize, processedSize);
 
@@ -81,7 +83,7 @@ export default function CompareModal({
 
           <button
             onClick={onClose}
-            aria-label="닫기"
+            aria-label={t.compareClose}
             style={{
               width: 32, height: 32, borderRadius: 8,
               background: 'rgba(255,255,255,0.05)',
@@ -114,7 +116,7 @@ export default function CompareModal({
         >
           <img
             src={showOriginal ? originalUrl : processedUrl}
-            alt={showOriginal ? '원본' : '변환 후'}
+            alt={showOriginal ? t.compareOriginal : t.compareCompressed}
             style={{
               display: 'block', width: '100%', height: '100%', objectFit: 'contain',
             }}
@@ -129,8 +131,8 @@ export default function CompareModal({
             backdropFilter: 'blur(8px)',
             border: '1px solid rgba(255,255,255,0.1)',
           }}>
-            <TogglePill active={showOriginal} onClick={() => setShowOriginal(true)} label="원본" />
-            <TogglePill active={!showOriginal} onClick={() => setShowOriginal(false)} label="변환" accent />
+            <TogglePill active={showOriginal} onClick={() => setShowOriginal(true)} label={t.compareOriginal} />
+            <TogglePill active={!showOriginal} onClick={() => setShowOriginal(false)} label={t.compareCompressed} accent />
           </div>
 
           {/* Hint */}
@@ -142,7 +144,7 @@ export default function CompareModal({
             fontSize: 12, color: 'var(--text-muted)',
             pointerEvents: 'none',
           }}>
-            클릭하여 전환
+            {t.compareClickToToggle}
           </div>
         </div>
 
@@ -153,10 +155,10 @@ export default function CompareModal({
           borderTop: '1px solid rgba(255,255,255,0.06)',
           flexWrap: 'wrap',
         }}>
-          <Stat label="원본" value={formatBytes(originalSize)} sub={`${originalWidth}×${originalHeight}`} highlight={showOriginal} />
+          <Stat label={t.compareOriginal} value={formatBytes(originalSize)} sub={`${originalWidth}×${originalHeight}`} highlight={showOriginal} />
           <div style={{ color: 'var(--text-ghost)', fontSize: 18 }}>→</div>
-          <Stat label="변환" value={formatBytes(processedSize)} sub={`${processedWidth}×${processedHeight}`} accent highlight={!showOriginal} />
-          <Stat label="절약" value={formatBytes(originalSize - processedSize)} sub={`${Math.abs(ratio)}% 감소`} accent />
+          <Stat label={t.compareCompressed} value={formatBytes(processedSize)} sub={`${processedWidth}×${processedHeight}`} accent highlight={!showOriginal} />
+          <Stat label={t.compareSaved} value={formatBytes(originalSize - processedSize)} sub={`${Math.abs(ratio)}% ${t.compareReduction}`} accent />
         </div>
       </div>
     </div>

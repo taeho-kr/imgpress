@@ -1,4 +1,5 @@
 import type { ProcessOptions } from '../utils/imageProcessor';
+import { useI18n } from '../i18n/useI18n';
 
 interface Props {
   options: ProcessOptions;
@@ -12,9 +13,9 @@ interface Props {
 }
 
 const FORMATS = [
-  { value: 'image/webp' as const, label: 'WebP', hint: '권장' },
-  { value: 'image/jpeg' as const, label: 'JPEG', hint: null },
-  { value: 'image/png' as const, label: 'PNG', hint: null },
+  { value: 'image/webp' as const, label: 'WebP', hintKey: true },
+  { value: 'image/jpeg' as const, label: 'JPEG', hintKey: false },
+  { value: 'image/png' as const, label: 'PNG', hintKey: false },
 ];
 
 
@@ -22,6 +23,7 @@ export default function OptionsPanel({
   options, onChange, onProcess, onClear, onDownloadAll,
   imageCount, doneCount, isProcessing,
 }: Props) {
+  const { t } = useI18n();
   const set = <K extends keyof ProcessOptions>(k: K, v: ProcessOptions[K]) =>
     onChange({ ...options, [k]: v });
 
@@ -40,7 +42,7 @@ export default function OptionsPanel({
       }}
     >
       {/* Format */}
-      <Section label="출력 포맷">
+      <Section label={t.optFormat}>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -49,7 +51,8 @@ export default function OptionsPanel({
           borderRadius: 10,
           padding: 4,
         }}>
-          {FORMATS.map(({ value, label, hint }) => {
+          {FORMATS.map(({ value, label, hintKey }) => {
+            const hint = hintKey ? t.optFormatHint : null;
             const active = options.format === value;
             return (
               <button
@@ -93,7 +96,7 @@ export default function OptionsPanel({
 
       {/* Quality */}
       <Section
-        label="압축 품질"
+        label={t.optQuality}
         right={
           <span style={{
             fontFamily: 'var(--font-mono)',
@@ -143,8 +146,8 @@ export default function OptionsPanel({
           color: 'var(--text-ghost)',
           letterSpacing: '0.02em',
         }}>
-          <span>작은 파일</span>
-          <span>높은 품질</span>
+          <span>{t.optQualityLow}</span>
+          <span>{t.optQualityHigh}</span>
         </div>
       </Section>
 
@@ -165,7 +168,7 @@ export default function OptionsPanel({
                 stroke="currentColor" strokeWidth="2.5" className="spin">
                 <path d="M21 12a9 9 0 1 1-6.219-8.56" />
               </svg>
-              처리 중...
+              {t.actCompressing}
             </>
           ) : (
             <>
@@ -173,7 +176,7 @@ export default function OptionsPanel({
                 stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
               </svg>
-              변환하기 · {imageCount}장
+              {t.actCompress} · {imageCount}
             </>
           )}
         </button>
@@ -190,7 +193,7 @@ export default function OptionsPanel({
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            전체 다운로드 · {doneCount}장
+            {t.actDownloadAll} · {doneCount}
           </button>
         )}
 
@@ -200,7 +203,7 @@ export default function OptionsPanel({
             className="btn-ghost"
             style={{ width: '100%', fontSize: 11 }}
           >
-            전체 삭제
+            {t.actClearAll}
           </button>
         )}
       </div>

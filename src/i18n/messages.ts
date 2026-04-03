@@ -1,0 +1,614 @@
+export type Locale = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'fr' | 'de' | 'pt' | 'vi' | 'th';
+
+export interface Messages {
+  // Nav
+  navTitle: string;
+  navPrivacy: string;
+
+  // Hero
+  eyebrow: string;
+  heroLine1: string;
+  heroLine2: string;
+  heroSuffix: string;
+  heroSub1: string;
+  heroSub2: string;
+
+  // DropZone
+  dropTitle: string;
+  dropTitleHover: string;
+  dropAddMore: string;
+  dropFormats: string;
+  dropPrivacy: string;
+
+  // Features
+  featurePrivacyTitle: string;
+  featurePrivacyDesc: string;
+  featureSpeedTitle: string;
+  featureSpeedDesc: string;
+  featureBatchTitle: string;
+  featureBatchDesc: string;
+
+  // Trust
+  trustFree: string;
+  trustOffline: string;
+  trustNoInstall: string;
+  trustNoAds: string;
+
+  // Options
+  optFormat: string;
+  optFormatHint: string;
+  optQuality: string;
+  optQualityLow: string;
+  optQualityHigh: string;
+
+  // Actions
+  actCompress: string;
+  actCompressing: string;
+  actDownloadAll: string;
+  actClearAll: string;
+  actDownload: string;
+
+  // Image card
+  cardOriginal: string;
+  cardCompressed: string;
+  cardProcessing: string;
+  cardFailed: string;
+
+  // Summary
+  summaryDone: string;
+  summarySaved: string;
+
+  // Compare modal
+  compareOriginal: string;
+  compareCompressed: string;
+  compareClickToToggle: string;
+  compareSaved: string;
+  compareReduction: string;
+  compareClose: string;
+
+  // Workspace
+  workspaceFiles: string;
+  workspaceHint: string;
+
+  // Footer
+  footer: string;
+}
+
+const ko: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: '서버 전송 없음',
+  eyebrow: '무료 · 오프라인 · 프라이버시',
+  heroLine1: '이미지 압축,',
+  heroLine2: '단 한 번의 드래그',
+  heroSuffix: '로',
+  heroSub1: 'WebP · JPEG · PNG 변환과 용량 압축을',
+  heroSub2: '브라우저에서 즉시 처리합니다.',
+  dropTitle: '이미지를 드래그하거나 클릭',
+  dropTitleHover: '여기에 놓으세요',
+  dropAddMore: '이미지 추가',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: '브라우저에서만 처리 · 서버 전송 없음',
+  featurePrivacyTitle: '완전한 프라이버시',
+  featurePrivacyDesc: '이미지가 기기를 벗어나지 않습니다. 서버 업로드 없음.',
+  featureSpeedTitle: '즉시 변환',
+  featureSpeedDesc: 'Canvas API 기반 네이티브 처리. 설치 필요 없음.',
+  featureBatchTitle: '일괄 처리',
+  featureBatchDesc: '여러 이미지를 동시에 변환. WebP·JPEG·PNG 지원.',
+  trustFree: '100% 무료',
+  trustOffline: '오프라인 작동',
+  trustNoInstall: '설치 불필요',
+  trustNoAds: '광고 없음',
+  optFormat: '출력 포맷',
+  optFormatHint: '권장',
+  optQuality: '압축 품질',
+  optQualityLow: '작은 파일',
+  optQualityHigh: '높은 품질',
+  actCompress: '변환하기',
+  actCompressing: '처리 중...',
+  actDownloadAll: '전체 다운로드',
+  actClearAll: '전체 삭제',
+  actDownload: '다운로드',
+  cardOriginal: '원본',
+  cardCompressed: '변환',
+  cardProcessing: '변환 중',
+  cardFailed: '변환 실패',
+  summaryDone: '장 완료',
+  summarySaved: '절약',
+  compareOriginal: '원본',
+  compareCompressed: '변환',
+  compareClickToToggle: '클릭하여 전환',
+  compareSaved: '절약',
+  compareReduction: '감소',
+  compareClose: '닫기',
+  workspaceFiles: '개 파일',
+  workspaceHint: '옵션을 설정하고 변환하기를 누르세요',
+  footer: 'ImgPress — Free & Private',
+};
+
+const en: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: 'No server upload',
+  eyebrow: 'Free · Offline · Private',
+  heroLine1: 'Image compression,',
+  heroLine2: 'just one drag',
+  heroSuffix: '',
+  heroSub1: 'Compress and convert WebP · JPEG · PNG',
+  heroSub2: 'directly in your browser.',
+  dropTitle: 'Drag images here or click',
+  dropTitleHover: 'Drop here!',
+  dropAddMore: 'Add more',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: 'Processed in browser · No server upload',
+  featurePrivacyTitle: 'Full Privacy',
+  featurePrivacyDesc: 'Images never leave your device. No server upload.',
+  featureSpeedTitle: 'Instant',
+  featureSpeedDesc: 'Native Canvas API processing. No install needed.',
+  featureBatchTitle: 'Batch Process',
+  featureBatchDesc: 'Compress multiple images at once. WebP·JPEG·PNG.',
+  trustFree: '100% Free',
+  trustOffline: 'Works Offline',
+  trustNoInstall: 'No Install',
+  trustNoAds: 'No Ads',
+  optFormat: 'Output Format',
+  optFormatHint: 'Recommended',
+  optQuality: 'Quality',
+  optQualityLow: 'Smaller file',
+  optQualityHigh: 'Higher quality',
+  actCompress: 'Compress',
+  actCompressing: 'Processing...',
+  actDownloadAll: 'Download All',
+  actClearAll: 'Clear All',
+  actDownload: 'Download',
+  cardOriginal: 'Original',
+  cardCompressed: 'Compressed',
+  cardProcessing: 'Compressing',
+  cardFailed: 'Failed',
+  summaryDone: ' done',
+  summarySaved: 'saved',
+  compareOriginal: 'Original',
+  compareCompressed: 'Compressed',
+  compareClickToToggle: 'Click to toggle',
+  compareSaved: 'Saved',
+  compareReduction: 'reduction',
+  compareClose: 'Close',
+  workspaceFiles: ' files',
+  workspaceHint: 'Set options and click compress',
+  footer: 'ImgPress — Free & Private',
+};
+
+const ja: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: 'サーバー送信なし',
+  eyebrow: '無料 · オフライン · プライバシー',
+  heroLine1: '画像圧縮、',
+  heroLine2: 'ドラッグ一つ',
+  heroSuffix: 'で',
+  heroSub1: 'WebP · JPEG · PNG 変換と圧縮を',
+  heroSub2: 'ブラウザで即座に処理します。',
+  dropTitle: '画像をドラッグまたはクリック',
+  dropTitleHover: 'ここにドロップ！',
+  dropAddMore: '画像を追加',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: 'ブラウザ内で処理 · サーバー送信なし',
+  featurePrivacyTitle: '完全なプライバシー',
+  featurePrivacyDesc: '画像はデバイスから離れません。サーバーアップロードなし。',
+  featureSpeedTitle: '即時変換',
+  featureSpeedDesc: 'Canvas APIによるネイティブ処理。インストール不要。',
+  featureBatchTitle: '一括処理',
+  featureBatchDesc: '複数の画像を同時に変換。WebP·JPEG·PNG対応。',
+  trustFree: '完全無料',
+  trustOffline: 'オフライン対応',
+  trustNoInstall: 'インストール不要',
+  trustNoAds: '広告なし',
+  optFormat: '出力フォーマット',
+  optFormatHint: '推奨',
+  optQuality: '圧縮品質',
+  optQualityLow: '小さいファイル',
+  optQualityHigh: '高品質',
+  actCompress: '変換する',
+  actCompressing: '処理中...',
+  actDownloadAll: '全てダウンロード',
+  actClearAll: '全て削除',
+  actDownload: 'ダウンロード',
+  cardOriginal: '元画像',
+  cardCompressed: '変換後',
+  cardProcessing: '変換中',
+  cardFailed: '変換失敗',
+  summaryDone: '枚完了',
+  summarySaved: '節約',
+  compareOriginal: '元画像',
+  compareCompressed: '変換後',
+  compareClickToToggle: 'クリックで切替',
+  compareSaved: '節約',
+  compareReduction: '削減',
+  compareClose: '閉じる',
+  workspaceFiles: '個のファイル',
+  workspaceHint: 'オプションを設定して変換をクリック',
+  footer: 'ImgPress — Free & Private',
+};
+
+const zh: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: '无服务器上传',
+  eyebrow: '免费 · 离线 · 隐私',
+  heroLine1: '图片压缩，',
+  heroLine2: '一次拖拽',
+  heroSuffix: '搞定',
+  heroSub1: 'WebP · JPEG · PNG 转换与压缩',
+  heroSub2: '在浏览器中即时处理。',
+  dropTitle: '拖拽图片到此处或点击',
+  dropTitleHover: '放在这里！',
+  dropAddMore: '添加更多',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: '浏览器内处理 · 无服务器上传',
+  featurePrivacyTitle: '完全隐私',
+  featurePrivacyDesc: '图片不会离开您的设备。无服务器上传。',
+  featureSpeedTitle: '即时转换',
+  featureSpeedDesc: '基于Canvas API的原生处理。无需安装。',
+  featureBatchTitle: '批量处理',
+  featureBatchDesc: '同时转换多张图片。支持WebP·JPEG·PNG。',
+  trustFree: '100%免费',
+  trustOffline: '离线可用',
+  trustNoInstall: '无需安装',
+  trustNoAds: '无广告',
+  optFormat: '输出格式',
+  optFormatHint: '推荐',
+  optQuality: '压缩质量',
+  optQualityLow: '更小文件',
+  optQualityHigh: '更高质量',
+  actCompress: '开始压缩',
+  actCompressing: '处理中...',
+  actDownloadAll: '全部下载',
+  actClearAll: '全部清除',
+  actDownload: '下载',
+  cardOriginal: '原图',
+  cardCompressed: '压缩后',
+  cardProcessing: '压缩中',
+  cardFailed: '压缩失败',
+  summaryDone: '张完成',
+  summarySaved: '节省',
+  compareOriginal: '原图',
+  compareCompressed: '压缩后',
+  compareClickToToggle: '点击切换',
+  compareSaved: '节省',
+  compareReduction: '减少',
+  compareClose: '关闭',
+  workspaceFiles: '个文件',
+  workspaceHint: '设置选项后点击压缩',
+  footer: 'ImgPress — Free & Private',
+};
+
+const es: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: 'Sin subida al servidor',
+  eyebrow: 'Gratis · Sin conexión · Privado',
+  heroLine1: 'Compresión de imágenes,',
+  heroLine2: 'con solo arrastrar',
+  heroSuffix: '',
+  heroSub1: 'Convierte y comprime WebP · JPEG · PNG',
+  heroSub2: 'directamente en tu navegador.',
+  dropTitle: 'Arrastra imágenes aquí o haz clic',
+  dropTitleHover: '¡Suelta aquí!',
+  dropAddMore: 'Agregar más',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: 'Procesado en el navegador · Sin subida',
+  featurePrivacyTitle: 'Privacidad total',
+  featurePrivacyDesc: 'Las imágenes nunca salen de tu dispositivo.',
+  featureSpeedTitle: 'Instantáneo',
+  featureSpeedDesc: 'Procesamiento nativo con Canvas API. Sin instalación.',
+  featureBatchTitle: 'Procesamiento por lotes',
+  featureBatchDesc: 'Comprime varias imágenes a la vez. WebP·JPEG·PNG.',
+  trustFree: '100% Gratis',
+  trustOffline: 'Funciona sin conexión',
+  trustNoInstall: 'Sin instalación',
+  trustNoAds: 'Sin anuncios',
+  optFormat: 'Formato de salida',
+  optFormatHint: 'Recomendado',
+  optQuality: 'Calidad',
+  optQualityLow: 'Archivo más pequeño',
+  optQualityHigh: 'Mayor calidad',
+  actCompress: 'Comprimir',
+  actCompressing: 'Procesando...',
+  actDownloadAll: 'Descargar todo',
+  actClearAll: 'Limpiar todo',
+  actDownload: 'Descargar',
+  cardOriginal: 'Original',
+  cardCompressed: 'Comprimido',
+  cardProcessing: 'Comprimiendo',
+  cardFailed: 'Error',
+  summaryDone: ' completados',
+  summarySaved: 'ahorrado',
+  compareOriginal: 'Original',
+  compareCompressed: 'Comprimido',
+  compareClickToToggle: 'Clic para alternar',
+  compareSaved: 'Ahorrado',
+  compareReduction: 'reducción',
+  compareClose: 'Cerrar',
+  workspaceFiles: ' archivos',
+  workspaceHint: 'Configura opciones y haz clic en comprimir',
+  footer: 'ImgPress — Free & Private',
+};
+
+const fr: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: 'Aucun envoi serveur',
+  eyebrow: 'Gratuit · Hors ligne · Privé',
+  heroLine1: 'Compression d\'images,',
+  heroLine2: 'un simple glisser',
+  heroSuffix: '',
+  heroSub1: 'Convertissez et compressez WebP · JPEG · PNG',
+  heroSub2: 'directement dans votre navigateur.',
+  dropTitle: 'Glissez des images ici ou cliquez',
+  dropTitleHover: 'Déposez ici !',
+  dropAddMore: 'Ajouter',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: 'Traitement dans le navigateur · Aucun envoi',
+  featurePrivacyTitle: 'Confidentialité totale',
+  featurePrivacyDesc: 'Les images ne quittent jamais votre appareil.',
+  featureSpeedTitle: 'Instantané',
+  featureSpeedDesc: 'Traitement natif via Canvas API. Aucune installation.',
+  featureBatchTitle: 'Traitement par lots',
+  featureBatchDesc: 'Compressez plusieurs images à la fois. WebP·JPEG·PNG.',
+  trustFree: '100% Gratuit',
+  trustOffline: 'Fonctionne hors ligne',
+  trustNoInstall: 'Sans installation',
+  trustNoAds: 'Sans publicité',
+  optFormat: 'Format de sortie',
+  optFormatHint: 'Recommandé',
+  optQuality: 'Qualité',
+  optQualityLow: 'Fichier plus petit',
+  optQualityHigh: 'Meilleure qualité',
+  actCompress: 'Compresser',
+  actCompressing: 'En cours...',
+  actDownloadAll: 'Tout télécharger',
+  actClearAll: 'Tout effacer',
+  actDownload: 'Télécharger',
+  cardOriginal: 'Original',
+  cardCompressed: 'Compressé',
+  cardProcessing: 'Compression',
+  cardFailed: 'Échec',
+  summaryDone: ' terminés',
+  summarySaved: 'économisé',
+  compareOriginal: 'Original',
+  compareCompressed: 'Compressé',
+  compareClickToToggle: 'Cliquez pour basculer',
+  compareSaved: 'Économisé',
+  compareReduction: 'réduction',
+  compareClose: 'Fermer',
+  workspaceFiles: ' fichiers',
+  workspaceHint: 'Configurez les options et cliquez sur compresser',
+  footer: 'ImgPress — Free & Private',
+};
+
+const de: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: 'Kein Server-Upload',
+  eyebrow: 'Kostenlos · Offline · Privat',
+  heroLine1: 'Bildkomprimierung,',
+  heroLine2: 'mit einem Drag',
+  heroSuffix: '',
+  heroSub1: 'WebP · JPEG · PNG konvertieren und komprimieren',
+  heroSub2: 'direkt im Browser.',
+  dropTitle: 'Bilder hierher ziehen oder klicken',
+  dropTitleHover: 'Hier ablegen!',
+  dropAddMore: 'Mehr hinzufügen',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: 'Verarbeitung im Browser · Kein Upload',
+  featurePrivacyTitle: 'Volle Privatsphäre',
+  featurePrivacyDesc: 'Bilder verlassen niemals Ihr Gerät.',
+  featureSpeedTitle: 'Sofort',
+  featureSpeedDesc: 'Native Canvas API-Verarbeitung. Keine Installation.',
+  featureBatchTitle: 'Stapelverarbeitung',
+  featureBatchDesc: 'Mehrere Bilder gleichzeitig komprimieren. WebP·JPEG·PNG.',
+  trustFree: '100% Kostenlos',
+  trustOffline: 'Offline verfügbar',
+  trustNoInstall: 'Keine Installation',
+  trustNoAds: 'Keine Werbung',
+  optFormat: 'Ausgabeformat',
+  optFormatHint: 'Empfohlen',
+  optQuality: 'Qualität',
+  optQualityLow: 'Kleinere Datei',
+  optQualityHigh: 'Höhere Qualität',
+  actCompress: 'Komprimieren',
+  actCompressing: 'Verarbeitung...',
+  actDownloadAll: 'Alle herunterladen',
+  actClearAll: 'Alle löschen',
+  actDownload: 'Herunterladen',
+  cardOriginal: 'Original',
+  cardCompressed: 'Komprimiert',
+  cardProcessing: 'Komprimierung',
+  cardFailed: 'Fehlgeschlagen',
+  summaryDone: ' fertig',
+  summarySaved: 'gespart',
+  compareOriginal: 'Original',
+  compareCompressed: 'Komprimiert',
+  compareClickToToggle: 'Klicken zum Umschalten',
+  compareSaved: 'Gespart',
+  compareReduction: 'Reduktion',
+  compareClose: 'Schließen',
+  workspaceFiles: ' Dateien',
+  workspaceHint: 'Optionen einstellen und komprimieren klicken',
+  footer: 'ImgPress — Free & Private',
+};
+
+const pt: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: 'Sem envio ao servidor',
+  eyebrow: 'Grátis · Offline · Privado',
+  heroLine1: 'Compressão de imagens,',
+  heroLine2: 'com um arrastar',
+  heroSuffix: '',
+  heroSub1: 'Converta e comprima WebP · JPEG · PNG',
+  heroSub2: 'diretamente no seu navegador.',
+  dropTitle: 'Arraste imagens aqui ou clique',
+  dropTitleHover: 'Solte aqui!',
+  dropAddMore: 'Adicionar mais',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: 'Processado no navegador · Sem envio',
+  featurePrivacyTitle: 'Privacidade total',
+  featurePrivacyDesc: 'As imagens nunca saem do seu dispositivo.',
+  featureSpeedTitle: 'Instantâneo',
+  featureSpeedDesc: 'Processamento nativo com Canvas API. Sem instalação.',
+  featureBatchTitle: 'Processamento em lote',
+  featureBatchDesc: 'Comprima várias imagens de uma vez. WebP·JPEG·PNG.',
+  trustFree: '100% Grátis',
+  trustOffline: 'Funciona offline',
+  trustNoInstall: 'Sem instalação',
+  trustNoAds: 'Sem anúncios',
+  optFormat: 'Formato de saída',
+  optFormatHint: 'Recomendado',
+  optQuality: 'Qualidade',
+  optQualityLow: 'Arquivo menor',
+  optQualityHigh: 'Maior qualidade',
+  actCompress: 'Comprimir',
+  actCompressing: 'Processando...',
+  actDownloadAll: 'Baixar tudo',
+  actClearAll: 'Limpar tudo',
+  actDownload: 'Baixar',
+  cardOriginal: 'Original',
+  cardCompressed: 'Comprimido',
+  cardProcessing: 'Comprimindo',
+  cardFailed: 'Falha',
+  summaryDone: ' concluídos',
+  summarySaved: 'economizado',
+  compareOriginal: 'Original',
+  compareCompressed: 'Comprimido',
+  compareClickToToggle: 'Clique para alternar',
+  compareSaved: 'Economizado',
+  compareReduction: 'redução',
+  compareClose: 'Fechar',
+  workspaceFiles: ' arquivos',
+  workspaceHint: 'Configure as opções e clique em comprimir',
+  footer: 'ImgPress — Free & Private',
+};
+
+const vi: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: 'Không tải lên máy chủ',
+  eyebrow: 'Miễn phí · Ngoại tuyến · Riêng tư',
+  heroLine1: 'Nén ảnh,',
+  heroLine2: 'chỉ một lần kéo thả',
+  heroSuffix: '',
+  heroSub1: 'Chuyển đổi và nén WebP · JPEG · PNG',
+  heroSub2: 'trực tiếp trong trình duyệt.',
+  dropTitle: 'Kéo ảnh vào đây hoặc nhấp',
+  dropTitleHover: 'Thả vào đây!',
+  dropAddMore: 'Thêm ảnh',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: 'Xử lý trong trình duyệt · Không tải lên',
+  featurePrivacyTitle: 'Riêng tư hoàn toàn',
+  featurePrivacyDesc: 'Ảnh không bao giờ rời khỏi thiết bị của bạn.',
+  featureSpeedTitle: 'Tức thì',
+  featureSpeedDesc: 'Xử lý gốc bằng Canvas API. Không cần cài đặt.',
+  featureBatchTitle: 'Xử lý hàng loạt',
+  featureBatchDesc: 'Nén nhiều ảnh cùng lúc. WebP·JPEG·PNG.',
+  trustFree: 'Miễn phí 100%',
+  trustOffline: 'Hoạt động ngoại tuyến',
+  trustNoInstall: 'Không cần cài đặt',
+  trustNoAds: 'Không quảng cáo',
+  optFormat: 'Định dạng đầu ra',
+  optFormatHint: 'Khuyến nghị',
+  optQuality: 'Chất lượng',
+  optQualityLow: 'Tệp nhỏ hơn',
+  optQualityHigh: 'Chất lượng cao',
+  actCompress: 'Nén',
+  actCompressing: 'Đang xử lý...',
+  actDownloadAll: 'Tải tất cả',
+  actClearAll: 'Xóa tất cả',
+  actDownload: 'Tải xuống',
+  cardOriginal: 'Gốc',
+  cardCompressed: 'Đã nén',
+  cardProcessing: 'Đang nén',
+  cardFailed: 'Thất bại',
+  summaryDone: ' hoàn thành',
+  summarySaved: 'tiết kiệm',
+  compareOriginal: 'Gốc',
+  compareCompressed: 'Đã nén',
+  compareClickToToggle: 'Nhấp để chuyển đổi',
+  compareSaved: 'Tiết kiệm',
+  compareReduction: 'giảm',
+  compareClose: 'Đóng',
+  workspaceFiles: ' tệp',
+  workspaceHint: 'Cài đặt tùy chọn và nhấp nén',
+  footer: 'ImgPress — Free & Private',
+};
+
+const th: Messages = {
+  navTitle: 'ImgPress',
+  navPrivacy: 'ไม่อัปโหลดไปเซิร์ฟเวอร์',
+  eyebrow: 'ฟรี · ออฟไลน์ · ส่วนตัว',
+  heroLine1: 'บีบอัดรูปภาพ',
+  heroLine2: 'แค่ลากวาง',
+  heroSuffix: '',
+  heroSub1: 'แปลงและบีบอัด WebP · JPEG · PNG',
+  heroSub2: 'โดยตรงในเบราว์เซอร์ของคุณ',
+  dropTitle: 'ลากรูปภาพมาที่นี่หรือคลิก',
+  dropTitleHover: 'วางที่นี่!',
+  dropAddMore: 'เพิ่มอีก',
+  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropPrivacy: 'ประมวลผลในเบราว์เซอร์ · ไม่อัปโหลด',
+  featurePrivacyTitle: 'ความเป็นส่วนตัวเต็มที่',
+  featurePrivacyDesc: 'รูปภาพไม่ออกจากอุปกรณ์ของคุณ',
+  featureSpeedTitle: 'ทันที',
+  featureSpeedDesc: 'ประมวลผลด้วย Canvas API ไม่ต้องติดตั้ง',
+  featureBatchTitle: 'ประมวลผลเป็นชุด',
+  featureBatchDesc: 'บีบอัดหลายภาพพร้อมกัน WebP·JPEG·PNG',
+  trustFree: 'ฟรี 100%',
+  trustOffline: 'ใช้งานออฟไลน์',
+  trustNoInstall: 'ไม่ต้องติดตั้ง',
+  trustNoAds: 'ไม่มีโฆษณา',
+  optFormat: 'รูปแบบผลลัพธ์',
+  optFormatHint: 'แนะนำ',
+  optQuality: 'คุณภาพ',
+  optQualityLow: 'ไฟล์เล็กลง',
+  optQualityHigh: 'คุณภาพสูง',
+  actCompress: 'บีบอัด',
+  actCompressing: 'กำลังประมวลผล...',
+  actDownloadAll: 'ดาวน์โหลดทั้งหมด',
+  actClearAll: 'ล้างทั้งหมด',
+  actDownload: 'ดาวน์โหลด',
+  cardOriginal: 'ต้นฉบับ',
+  cardCompressed: 'บีบอัดแล้ว',
+  cardProcessing: 'กำลังบีบอัด',
+  cardFailed: 'ล้มเหลว',
+  summaryDone: ' เสร็จสิ้น',
+  summarySaved: 'ประหยัด',
+  compareOriginal: 'ต้นฉบับ',
+  compareCompressed: 'บีบอัดแล้ว',
+  compareClickToToggle: 'คลิกเพื่อสลับ',
+  compareSaved: 'ประหยัด',
+  compareReduction: 'ลดลง',
+  compareClose: 'ปิด',
+  workspaceFiles: ' ไฟล์',
+  workspaceHint: 'ตั้งค่าตัวเลือกแล้วคลิกบีบอัด',
+  footer: 'ImgPress — Free & Private',
+};
+
+export const LOCALES: Record<Locale, { label: string; flag: string }> = {
+  ko: { label: '한국어', flag: '🇰🇷' },
+  en: { label: 'English', flag: '🇺🇸' },
+  ja: { label: '日本語', flag: '🇯🇵' },
+  zh: { label: '中文', flag: '🇨🇳' },
+  es: { label: 'Español', flag: '🇪🇸' },
+  fr: { label: 'Français', flag: '🇫🇷' },
+  de: { label: 'Deutsch', flag: '🇩🇪' },
+  pt: { label: 'Português', flag: '🇧🇷' },
+  vi: { label: 'Tiếng Việt', flag: '🇻🇳' },
+  th: { label: 'ไทย', flag: '🇹🇭' },
+};
+
+export const messages: Record<Locale, Messages> = { ko, en, ja, zh, es, fr, de, pt, vi, th };
+
+export function detectLocale(): Locale {
+  const lang = navigator.language.toLowerCase();
+  if (lang.startsWith('ko')) return 'ko';
+  if (lang.startsWith('ja')) return 'ja';
+  if (lang.startsWith('zh')) return 'zh';
+  if (lang.startsWith('es')) return 'es';
+  if (lang.startsWith('fr')) return 'fr';
+  if (lang.startsWith('de')) return 'de';
+  if (lang.startsWith('pt')) return 'pt';
+  if (lang.startsWith('vi')) return 'vi';
+  if (lang.startsWith('th')) return 'th';
+  return 'en';
+}

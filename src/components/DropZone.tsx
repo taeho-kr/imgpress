@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState, type DragEvent } from 'react';
+import { useI18n } from '../i18n/useI18n';
 
 interface Props {
   onFiles: (files: FileList) => void;
@@ -6,6 +7,7 @@ interface Props {
 }
 
 export default function DropZone({ onFiles, hasFiles }: Props) {
+  const { t } = useI18n();
   const [over, setOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -122,8 +124,8 @@ export default function DropZone({ onFiles, hasFiles }: Props) {
             marginBottom: hasFiles ? 0 : 7,
           }}>
             {hasFiles
-              ? (over ? '여기에 놓으세요' : '이미지 추가')
-              : (over ? '여기에 놓으세요' : '이미지를 드래그하거나 클릭')}
+              ? (over ? t.dropTitleHover : t.dropAddMore)
+              : (over ? t.dropTitleHover : t.dropTitle)}
           </p>
           {!hasFiles && (
             <p style={{
@@ -131,7 +133,7 @@ export default function DropZone({ onFiles, hasFiles }: Props) {
               color: 'var(--text-tertiary)',
               letterSpacing: '-0.005em',
             }}>
-              JPG · PNG · WebP · GIF · BMP · SVG
+              {t.dropFormats}
             </p>
           )}
         </div>
@@ -156,7 +158,7 @@ export default function DropZone({ onFiles, hasFiles }: Props) {
               <rect x="3" y="11" width="18" height="11" rx="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
-            브라우저에서만 처리 · 서버 전송 없음
+            {t.dropPrivacy}
           </div>
         )}
       </div>

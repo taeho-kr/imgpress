@@ -1,4 +1,5 @@
 import { formatBytes, compressionRatio, getOutputFilename } from '../utils/imageProcessor';
+import { useI18n } from '../i18n/useI18n';
 
 interface Props {
   id: string;
@@ -24,6 +25,7 @@ export default function ImageCard({
   processedWidth, processedHeight,
   status, error, onRemove, onCompare, format,
 }: Props) {
+  const { t } = useI18n();
   const ratio = processedBlob ? compressionRatio(originalFile.size, processedBlob.size) : 0;
   const grew = ratio < 0;
 
@@ -81,7 +83,7 @@ export default function ImageCard({
               stroke="var(--accent)" strokeWidth="2" className="spin">
               <path d="M21 12a9 9 0 1 1-6.219-8.56" />
             </svg>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 500 }}>변환 중</span>
+            <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 500 }}>{t.cardProcessing}</span>
           </div>
         )}
 
@@ -99,7 +101,7 @@ export default function ImageCard({
             display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12,
           }}>
             <span style={{ fontSize: 11, color: 'var(--error)', textAlign: 'center', lineHeight: 1.5 }}>
-              {error || '변환 실패'}
+              {error || t.cardFailed}
             </span>
           </div>
         )}
@@ -168,7 +170,7 @@ export default function ImageCard({
 
         {/* Size comparison */}
         <div style={{ display: 'flex', gap: 6 }}>
-          <StatBox label="원본" accent={false}>
+          <StatBox label={t.cardOriginal} accent={false}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
               {formatBytes(originalFile.size)}
             </span>
@@ -179,7 +181,7 @@ export default function ImageCard({
             )}
           </StatBox>
 
-          <StatBox label="변환" accent={!!processedBlob}>
+          <StatBox label={t.cardCompressed} accent={!!processedBlob}>
             {processedBlob ? (
               <>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--success)', fontVariantNumeric: 'tabular-nums' }}>
@@ -229,7 +231,7 @@ export default function ImageCard({
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            다운로드
+            {t.actDownload}
           </button>
         )}
       </div>
