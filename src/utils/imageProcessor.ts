@@ -28,6 +28,77 @@ export function getOutputFilename(originalName: string, format: string): string 
   return `${base}_compressed${FORMAT_EXT[format] || '.jpg'}`;
 }
 
+export function formatBytes(bytes: number): string {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+}
+
+export function compressionRatio(original: number, processed: number): number {
+  return Math.round((1 - processed / original) * 100);
+}
+
+// ─── Worker Pool ──────────────────────────────────────────────────────────────
+
+const supportsWorker =
+  typeof Worker !== 'undefined' && typeof OffscreenCanvas !== 'undefined';
+
+const MAX_CONCURRENT = Math.min(
+  typeof navigator !== 'undefined' ? (navigator.hardwareConcurrency ?? 2) : 2,
+  4,
+);
+
+let activeWorkers = 0;
+const waitQueue: Array<() => void> = [];
+
+function acquireSlot(): Promise<void> {
+  if (activeWorkers < MAX_CONCURRENT) {
+    activeWorkers++;
+    return Promise.resolve();
+  }
+  return new Promise<void>((resolve) => {
+    waitQueue.push(() => {
+      activeWorkers++;
+      resolve();
+    });
+  });
+}
+
+function releaseSlot(): void {
+  activeWorkers--;
+  const next = waitQueue.shift();
+  if (next) next();
+}
+
+async function processWithWorker(
+  file: File,
+  options: ProcessOptions,
+): Promise<{ blob: Blob; width: number; height: number }> {
+  await acquireSlot();
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(
+      new URL('../workers/imageProcessor.worker.ts', import.meta.url),
+      { type: 'module' },
+    );
+    worker.onmessage = (e: MessageEvent) => {
+      worker.terminate();
+      releaseSlot();
+      if (e.data.error) reject(new Error(e.data.error));
+      else resolve({ blob: e.data.blob, width: e.data.width, height: e.data.height });
+    };
+    worker.onerror = (e: ErrorEvent) => {
+      worker.terminate();
+      releaseSlot();
+      reject(new Error(e.message || 'Worker error'));
+    };
+    worker.postMessage({ file, format: options.format, quality: options.quality });
+  });
+}
+
+// ─── Main Thread Fallback ─────────────────────────────────────────────────────
+
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -50,28 +121,21 @@ function canvasToBlob(canvas: HTMLCanvasElement, format: string, quality: number
   });
 }
 
-export async function processImage(
+async function processOnMainThread(
   file: File,
   options: ProcessOptions,
 ): Promise<{ blob: Blob; width: number; height: number }> {
   const url = URL.createObjectURL(file);
-
   try {
     const img = await loadImage(url);
-    const width = img.naturalWidth;
-    const height = img.naturalHeight;
-
+    const { naturalWidth: width, naturalHeight: height } = img;
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Canvas context not available');
-
+    const ctx = canvas.getContext('2d')!;
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(img, 0, 0, width, height);
-
     const blob = await canvasToBlob(canvas, options.format, options.quality);
     return { blob, width, height };
   } finally {
@@ -79,14 +143,18 @@ export async function processImage(
   }
 }
 
-export function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
-}
+// ─── Public API ───────────────────────────────────────────────────────────────
 
-export function compressionRatio(original: number, processed: number): number {
-  return Math.round((1 - processed / original) * 100);
+export async function processImage(
+  file: File,
+  options: ProcessOptions,
+): Promise<{ blob: Blob; width: number; height: number }> {
+  if (supportsWorker) {
+    try {
+      return await processWithWorker(file, options);
+    } catch {
+      // fall through to main thread
+    }
+  }
+  return processOnMainThread(file, options);
 }

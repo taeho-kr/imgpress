@@ -13,26 +13,20 @@ export function useImageStore() {
 
   const addFiles = useCallback((files: FileList | File[]) => {
     const accepted = Array.from(files).filter((f) => f.type.startsWith('image/'));
-    const newImages: ProcessedImage[] = accepted.map((file) => {
-      const url = URL.createObjectURL(file);
-      const img = new Image();
-      img.src = url;
+    const newImages: ProcessedImage[] = accepted.map((file) => ({
+      id: `img-${nextId++}`,
+      originalFile: file,
+      originalUrl: URL.createObjectURL(file),
+      originalWidth: 0,
+      originalHeight: 0,
+      processedBlob: null,
+      processedUrl: null,
+      processedWidth: 0,
+      processedHeight: 0,
+      status: 'pending' as const,
+    }));
 
-      return {
-        id: `img-${nextId++}`,
-        originalFile: file,
-        originalUrl: url,
-        originalWidth: 0,
-        originalHeight: 0,
-        processedBlob: null,
-        processedUrl: null,
-        processedWidth: 0,
-        processedHeight: 0,
-        status: 'pending' as const,
-      };
-    });
-
-    // Load original dimensions
+    // Load original dimensions asynchronously
     newImages.forEach((item) => {
       const img = new Image();
       img.onload = () => {
@@ -53,20 +47,24 @@ export function useImageStore() {
   const processAll = useCallback(async (options: ProcessOptions) => {
     setIsProcessing(true);
 
-    setImages((prev) =>
-      prev.map((img) =>
-        img.status !== 'done' ? { ...img, status: 'processing' as const } : img,
-      ),
-    );
-
+    // Capture pending items and mark them as processing in one setState
+    let toProcess: ProcessedImage[] = [];
     setImages((prev) => {
-      const toProcess = prev.filter((img) => img.status === 'processing');
+      toProcess = prev.filter((img) => img.status !== 'done');
+      return prev.map((img) =>
+        img.status !== 'done' ? { ...img, status: 'processing' as const } : img,
+      );
+    });
 
-      toProcess.forEach(async (item) => {
+    // Yield to React so "processing" state renders before heavy work starts
+    await new Promise<void>((r) => setTimeout(r, 0));
+
+    // Process all in parallel (worker pool limits concurrency internally)
+    await Promise.all(
+      toProcess.map(async (item) => {
         try {
           const result = await processImage(item.originalFile, options);
           const processedUrl = URL.createObjectURL(result.blob);
-
           setImages((curr) =>
             curr.map((p) =>
               p.id === item.id
@@ -90,10 +88,8 @@ export function useImageStore() {
             ),
           );
         }
-      });
-
-      return prev;
-    });
+      }),
+    );
 
     setIsProcessing(false);
   }, []);
