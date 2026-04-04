@@ -1,34 +1,50 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary SEO -->
-    <title>ImgPress — 무료 온라인 이미지 압축 | 브라우저에서 바로</title>
-    <meta name="description" content="이미지 용량을 무료로 줄이세요. JPG, PNG, WebP 압축을 브라우저에서 즉시 처리합니다. 서버 업로드 없이 개인정보를 보호합니다." />
-    <meta name="keywords" content="이미지 압축, 사진 용량 줄이기, 이미지 최적화, JPG 압축, PNG 압축, WebP 변환, 온라인 이미지 압축, 무료 이미지 압축, image compression, compress image online" />
+    <title>ImgPress — Free Online Image Compressor | No Upload Required</title>
+    <meta name="description" content="Compress JPG, PNG, and WebP images for free directly in your browser. No file upload, no server — your photos never leave your device. Works offline. 100% free." />
+    <meta name="keywords" content="image compressor, compress image online, free image compression, JPG compressor, PNG compressor, WebP converter, resize image, reduce image size, photo optimizer, 이미지 압축, 사진 용량 줄이기, 无损压缩图片, 画像圧縮" />
     <meta name="author" content="ImgPress" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://imgpress.app/" />
+    <link rel="canonical" href="https://imgpress.taeho.world/" />
 
-    <!-- Open Graph (Facebook, KakaoTalk, etc.) -->
+    <!-- hreflang — same URL, browser auto-detects language -->
+    <link rel="alternate" hreflang="x-default" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="en" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="ko" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="ja" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="zh" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="es" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="fr" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="de" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="pt" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="vi" href="https://imgpress.taeho.world/" />
+    <link rel="alternate" hreflang="th" href="https://imgpress.taeho.world/" />
+
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="ImgPress — 무료 온라인 이미지 압축" />
-    <meta property="og:description" content="JPG · PNG · WebP 이미지를 브라우저에서 바로 압축. 서버 전송 없음. 100% 무료." />
-    <meta property="og:url" content="https://imgpress.app/" />
+    <meta property="og:title" content="ImgPress — Free Online Image Compressor" />
+    <meta property="og:description" content="Compress JPG, PNG, WebP images instantly in your browser. No upload. No server. 100% private and free." />
+    <meta property="og:url" content="https://imgpress.taeho.world/" />
     <meta property="og:site_name" content="ImgPress" />
-    <meta property="og:locale" content="ko_KR" />
-    <meta property="og:locale:alternate" content="en_US" />
-    <meta property="og:image" content="https://imgpress.app/og-image.png" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ko_KR" />
+    <meta property="og:locale:alternate" content="ja_JP" />
+    <meta property="og:locale:alternate" content="zh_CN" />
+    <meta property="og:image" content="https://imgpress.taeho.world/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ImgPress — Free Online Image Compressor" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ImgPress — 무료 온라인 이미지 압축" />
-    <meta name="twitter:description" content="이미지를 브라우저에서 직접 압축. 서버 전송 없음. 완전 무료." />
-    <meta name="twitter:image" content="https://imgpress.app/og-image.png" />
+    <meta name="twitter:title" content="ImgPress — Free Online Image Compressor" />
+    <meta name="twitter:description" content="Compress images in your browser. No upload, no server, no cost." />
+    <meta name="twitter:image" content="https://imgpress.taeho.world/og-image.png" />
 
     <!-- Favicon & PWA -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -42,31 +58,93 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 
-    <!-- Structured Data (JSON-LD) -->
+    <!-- Structured Data: WebApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "ImgPress",
-      "url": "https://imgpress.app",
-      "description": "무료 온라인 이미지 압축 도구. JPG, PNG, WebP를 브라우저에서 바로 압축합니다. 서버 업로드 없이 개인정보를 보호합니다.",
+      "url": "https://imgpress.taeho.world",
+      "description": "Free online image compressor. Compress JPG, PNG, and WebP images directly in your browser. No file upload, no server — your photos never leave your device.",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "Any",
       "offers": {
         "@type": "Offer",
         "price": "0",
-        "priceCurrency": "KRW"
+        "priceCurrency": "USD"
       },
       "browserRequirements": "Requires a modern web browser with Canvas API support",
-      "inLanguage": ["ko", "en"],
+      "inLanguage": ["en", "ko", "ja", "zh", "es", "fr", "de", "pt", "vi", "th"],
       "isAccessibleForFree": true,
       "featureList": [
-        "JPG 이미지 압축",
-        "PNG 이미지 압축",
-        "WebP 변환 및 압축",
-        "브라우저 내 처리 (서버 전송 없음)",
-        "일괄 처리",
-        "품질 비교 (Before/After)"
+        "JPG / JPEG image compression",
+        "PNG image compression",
+        "WebP conversion and compression",
+        "GIF, BMP, SVG support",
+        "Browser-only processing — no server upload",
+        "Batch processing of multiple images",
+        "Before/After quality comparison",
+        "Works offline",
+        "No account or registration required",
+        "0% photo leakage risk"
+      ]
+    }
+    </script>
+
+    <!-- Structured Data: FAQPage (GEO — for AI search engines) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is ImgPress free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. ImgPress is completely free with no limits on the number of images or file size. No account or subscription required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my photos safe? Do they get uploaded to a server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Your photos never leave your device. ImgPress processes all images locally in your browser using the Canvas API. No files are transmitted to any server, making the leakage probability exactly 0%."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What image formats does ImgPress support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ImgPress accepts JPG, PNG, WebP, GIF, BMP, and SVG as input and can output compressed WebP, JPEG, or PNG files."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does ImgPress work offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Once the page is loaded, ImgPress works completely offline because all image processing happens inside your browser with no network requests."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I compress multiple images at once?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. ImgPress supports batch processing — you can drop multiple images at once and compress them all simultaneously."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What languages does ImgPress support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ImgPress is available in 10 languages: English, Korean, Japanese, Chinese, Spanish, French, German, Portuguese, Vietnamese, and Thai. The language is automatically detected from your browser settings."
+          }
+        }
       ]
     }
     </script>

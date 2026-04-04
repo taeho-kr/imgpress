@@ -1,4 +1,17 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://imgpress.app/sitemap.xml
+# AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://imgpress.taeho.world/sitemap.xml
