@@ -3,6 +3,7 @@ import DropZone from './components/DropZone';
 import OptionsPanel from './components/OptionsPanel';
 import ImageCard from './components/ImageCard';
 import CompareModal from './components/CompareModal';
+import PrivacyModal from './components/PrivacyModal';
 import LocaleSwitcher from './components/LocaleSwitcher';
 import { useI18n } from './i18n/useI18n';
 import { useImageStore } from './hooks/useImageStore';
@@ -22,7 +23,8 @@ const DEFAULT_OPTIONS: ProcessOptions = {
 export default function App() {
   const { t } = useI18n();
   const [options, setOptions] = useState<ProcessOptions>(DEFAULT_OPTIONS);
-  const { images, isProcessing, addFiles, processAll, removeImage, clearAll } = useImageStore();
+  const { images, isProcessing, addFiles, processAll, retryImage, removeImage, clearAll } = useImageStore();
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const done = images.filter((i) => i.status === 'done' && i.processedBlob);
   const totalOrig = done.reduce((s, i) => s + i.originalFile.size, 0);
@@ -201,7 +203,7 @@ export default function App() {
               <div className="image-grid">
                 {images.map((img, idx) => (
                   <div key={img.id} className="card-enter" style={{ animationDelay: `${Math.min(idx * 0.04, 0.4)}s` }}>
-                    <ImageCard {...img} onRemove={removeImage} format={options.format} onCompare={() => img.status === 'done' && img.processedUrl && setCompareImg(img)} />
+                    <ImageCard {...img} onRemove={removeImage} onRetry={() => retryImage(img.id, options)} format={options.format} onCompare={() => img.status === 'done' && img.processedUrl && setCompareImg(img)} />
                   </div>
                 ))}
               </div>
@@ -239,12 +241,24 @@ export default function App() {
         <footer style={{ borderTop: '1px solid rgba(255,255,255,0.04)', padding: '18px 24px' }}>
           <div style={{ maxWidth: 1152, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>{t.footer}</span>
-            <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>Canvas API · No WASM · No Upload</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>Canvas API · No WASM · No Upload</span>
+              <button
+                onClick={() => setShowPrivacy(true)}
+                style={{ fontSize: 11, color: 'var(--text-ghost)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, transition: 'color 0.15s ease' }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--text-ghost)'; }}
+              >
+                Privacy Policy
+              </button>
+            </div>
           </div>
         </footer>
       </div>
 
       {/* Compare modal */}
+      {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}
+
       {compareImg && compareImg.processedUrl && compareImg.processedBlob && (
         <CompareModal
           originalUrl={compareImg.originalUrl}

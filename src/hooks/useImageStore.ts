@@ -94,6 +94,37 @@ export function useImageStore() {
     setIsProcessing(false);
   }, []);
 
+  const retryImage = useCallback(async (id: string, options: ProcessOptions) => {
+    let targetItem: ProcessedImage | undefined;
+    setImages((prev) => {
+      targetItem = prev.find((img) => img.id === id);
+      return prev.map((img) =>
+        img.id === id ? { ...img, status: 'processing' as const, error: undefined } : img,
+      );
+    });
+
+    await new Promise<void>((r) => setTimeout(r, 0));
+    if (!targetItem) return;
+
+    try {
+      const result = await processImage(targetItem.originalFile, options);
+      const processedUrl = URL.createObjectURL(result.blob);
+      setImages((curr) =>
+        curr.map((p) =>
+          p.id === id
+            ? { ...p, processedBlob: result.blob, processedUrl, processedWidth: result.width, processedHeight: result.height, status: 'done' as const }
+            : p,
+        ),
+      );
+    } catch (err) {
+      setImages((curr) =>
+        curr.map((p) =>
+          p.id === id ? { ...p, status: 'error' as const, error: String(err) } : p,
+        ),
+      );
+    }
+  }, []);
+
   const removeImage = useCallback((id: string) => {
     setImages((prev) => {
       const item = prev.find((p) => p.id === id);
@@ -115,5 +146,5 @@ export function useImageStore() {
     });
   }, []);
 
-  return { images, isProcessing, addFiles, processAll, removeImage, clearAll };
+  return { images, isProcessing, addFiles, processAll, retryImage, removeImage, clearAll };
 }

@@ -14,6 +14,7 @@ interface Props {
   status: 'pending' | 'processing' | 'done' | 'error';
   error?: string;
   onRemove: (id: string) => void;
+  onRetry?: () => void;
   onCompare?: () => void;
   format: string;
 }
@@ -23,7 +24,7 @@ export default function ImageCard({
   originalWidth, originalHeight,
   processedBlob, processedUrl,
   processedWidth, processedHeight,
-  status, error, onRemove, onCompare, format,
+  status, onRemove, onRetry, onCompare, format,
 }: Props) {
   const { t } = useI18n();
   const ratio = processedBlob ? compressionRatio(originalFile.size, processedBlob.size) : 0;
@@ -98,11 +99,27 @@ export default function ImageCard({
             position: 'absolute', inset: 0,
             background: 'rgba(240,91,91,0.1)',
             backdropFilter: 'blur(4px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            gap: 10, padding: 12,
           }}>
             <span style={{ fontSize: 11, color: 'var(--error)', textAlign: 'center', lineHeight: 1.5 }}>
-              {error || t.cardFailed}
+              {t.cardFailed}
             </span>
+            {onRetry && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onRetry(); }}
+                style={{
+                  padding: '5px 14px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                  color: 'var(--error)', background: 'rgba(240,91,91,0.15)',
+                  border: '1px solid rgba(240,91,91,0.35)', cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(240,91,91,0.25)'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(240,91,91,0.15)'; }}
+              >
+                ↺ 재시도
+              </button>
+            )}
           </div>
         )}
 
