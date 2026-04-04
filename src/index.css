@@ -841,3 +841,148 @@ input[type="number"]::-webkit-inner-spin-button {
     order: -1;
   }
 }
+
+/* ─────────────────────────────────────────────
+   PRIVACY TERMINAL
+───────────────────────────────────────────── */
+
+.privacy-terminal {
+  max-width: 480px;
+  margin: 0 auto;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: rgba(4, 8, 14, 0.85);
+  border: 1px solid rgba(52, 201, 138, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 8px 40px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(52, 201, 138, 0.04);
+  backdrop-filter: blur(24px);
+  text-align: left;
+}
+
+.privacy-terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.85;
+}
+
+.terminal-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-ghost);
+  margin-left: 6px;
+  letter-spacing: 0.02em;
+}
+
+.privacy-terminal-body {
+  padding: 14px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.terminal-line {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.t-prompt {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.t-cmd {
+  color: rgba(175, 188, 210, 0.45);
+  font-style: italic;
+}
+
+.terminal-result {
+  animation: terminal-appear 0.3s ease both;
+}
+
+.terminal-result:nth-child(2) { animation-delay: 0.15s; }
+.terminal-result:nth-child(3) { animation-delay: 0.28s; }
+.terminal-result:nth-child(4) { animation-delay: 0.41s; }
+.terminal-result:nth-child(5) { animation-delay: 0.54s; }
+
+@keyframes terminal-appear {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.t-check {
+  color: var(--success);
+  font-weight: 700;
+  font-size: 13px;
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+
+.t-key {
+  color: rgba(130, 170, 255, 0.75);
+  min-width: 170px;
+}
+
+.t-sep {
+  color: var(--text-ghost);
+}
+
+.t-val-zero {
+  color: var(--success);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.t-val-big {
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 12px rgba(52, 201, 138, 0.6);
+}
+
+.t-val-local {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.terminal-status {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: terminal-appear 0.3s 0.7s ease both;
+}
+
+.t-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+  box-shadow: 0 0 8px var(--success-glow);
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+
+.t-status-text {
+  font-size: 11px;
+  color: rgba(52, 201, 138, 0.55);
+  line-height: 1.4;
+}

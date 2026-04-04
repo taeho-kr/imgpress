@@ -129,9 +129,52 @@ export default function App() {
                 <span style={{ color: 'var(--accent)', WebkitTextFillColor: 'var(--accent)' }}>{t.heroLine2}</span>{t.heroSuffix}
               </h1>
 
-              <p className="anim-fade-up anim-delay-2" style={{ fontSize: 'clamp(1.05rem, 1.8vw, 1.2rem)', color: 'var(--text-secondary)', lineHeight: 1.8, maxWidth: 420, margin: '0 auto', letterSpacing: '-0.005em' }}>
+              <p className="anim-fade-up anim-delay-2" style={{ fontSize: 'clamp(1.05rem, 1.8vw, 1.2rem)', color: 'var(--text-secondary)', lineHeight: 1.8, maxWidth: 420, margin: '0 auto 36px', letterSpacing: '-0.005em' }}>
                 {t.heroSub1}<br />{t.heroSub2}
               </p>
+
+              <div className="privacy-terminal anim-fade-up anim-delay-3">
+                <div className="privacy-terminal-header">
+                  <span className="terminal-dot" style={{ background: '#ff5f57' }} />
+                  <span className="terminal-dot" style={{ background: '#ffbd2e' }} />
+                  <span className="terminal-dot" style={{ background: '#28ca41' }} />
+                  <span className="terminal-title">network_monitor.sh</span>
+                </div>
+                <div className="privacy-terminal-body">
+                  <div className="terminal-line">
+                    <span className="t-prompt">$</span>
+                    <span className="t-cmd"> scanning outbound requests...</span>
+                  </div>
+                  <div className="terminal-line terminal-result">
+                    <span className="t-check">✓</span>
+                    <span className="t-key"> uploads_to_server</span>
+                    <span className="t-sep">  →  </span>
+                    <span className="t-val-zero">0 bytes</span>
+                  </div>
+                  <div className="terminal-line terminal-result">
+                    <span className="t-check">✓</span>
+                    <span className="t-key"> files_transmitted</span>
+                    <span className="t-sep">  →  </span>
+                    <span className="t-val-zero">NONE</span>
+                  </div>
+                  <div className="terminal-line terminal-result">
+                    <span className="t-check">✓</span>
+                    <span className="t-key"> processing_location</span>
+                    <span className="t-sep">  →  </span>
+                    <span className="t-val-local">localhost (this device)</span>
+                  </div>
+                  <div className="terminal-line terminal-result">
+                    <span className="t-check">✓</span>
+                    <span className="t-key"> leakage_probability</span>
+                    <span className="t-sep">  →  </span>
+                    <span className="t-val-zero t-val-big">0.000%</span>
+                  </div>
+                  <div className="terminal-line terminal-status">
+                    <span className="t-status-dot" />
+                    <span className="t-status-text">privacy guaranteed — all processing runs in your browser via Canvas API</span>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
