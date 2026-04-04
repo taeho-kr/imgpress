@@ -133,46 +133,21 @@ export default function App() {
                 {t.heroSub1}<br />{t.heroSub2}
               </p>
 
-              <div className="privacy-terminal anim-fade-up anim-delay-3">
-                <div className="privacy-terminal-header">
-                  <span className="terminal-dot" style={{ background: '#ff5f57' }} />
-                  <span className="terminal-dot" style={{ background: '#ffbd2e' }} />
-                  <span className="terminal-dot" style={{ background: '#28ca41' }} />
-                  <span className="terminal-title">network_monitor.sh</span>
+              <div className="privacy-guarantee anim-fade-up anim-delay-3">
+                <div className="privacy-shield">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <polyline points="9 12 11 14 15 10"/>
+                  </svg>
                 </div>
-                <div className="privacy-terminal-body">
-                  <div className="terminal-line">
-                    <span className="t-prompt">$</span>
-                    <span className="t-cmd"> scanning outbound requests...</span>
-                  </div>
-                  <div className="terminal-line terminal-result">
-                    <span className="t-check">✓</span>
-                    <span className="t-key"> uploads_to_server</span>
-                    <span className="t-sep">  →  </span>
-                    <span className="t-val-zero">0 bytes</span>
-                  </div>
-                  <div className="terminal-line terminal-result">
-                    <span className="t-check">✓</span>
-                    <span className="t-key"> files_transmitted</span>
-                    <span className="t-sep">  →  </span>
-                    <span className="t-val-zero">NONE</span>
-                  </div>
-                  <div className="terminal-line terminal-result">
-                    <span className="t-check">✓</span>
-                    <span className="t-key"> processing_location</span>
-                    <span className="t-sep">  →  </span>
-                    <span className="t-val-local">localhost (this device)</span>
-                  </div>
-                  <div className="terminal-line terminal-result">
-                    <span className="t-check">✓</span>
-                    <span className="t-key"> leakage_probability</span>
-                    <span className="t-sep">  →  </span>
-                    <span className="t-val-zero t-val-big">0.000%</span>
-                  </div>
-                  <div className="terminal-line terminal-status">
-                    <span className="t-status-dot" />
-                    <span className="t-status-text">privacy guaranteed — all processing runs in your browser via Canvas API</span>
-                  </div>
+                <div className="privacy-main">
+                  <div className="privacy-zero">0%</div>
+                  <div className="privacy-label">사진 유출 가능성</div>
+                </div>
+                <div className="privacy-divider" />
+                <div className="privacy-desc-block">
+                  <p className="privacy-claim">사진 파일이 이 기기를 벗어나지 않습니다</p>
+                  <p className="privacy-sub-claim">서버 전송 없음 · 브라우저에서만 처리 · 오프라인 작동</p>
                 </div>
               </div>
             </div>
