@@ -74,7 +74,7 @@ export default function App() {
     },
   ];
 
-  const TRUST = [t.trustFree, t.trustOffline, t.trustNoInstall, t.trustNoAds];
+  const TRUST = [t.trustFree, t.trustOffline, t.trustNoInstall];
 
   return (
     <>
