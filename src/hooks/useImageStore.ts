@@ -48,18 +48,22 @@ export function useImageStore() {
   const processAll = useCallback(async (options: ProcessOptions) => {
     setIsProcessing(true);
 
-    // Capture items to process: selected non-done, or all non-done if nothing selected
+    // Selected → process those (even if done, for re-compress)
+    // No selection → process all non-done
     let toProcess: ProcessedImage[] = [];
     setImages((prev) => {
       const selectedIds = selected;
       const hasSelection = selectedIds.size > 0;
       toProcess = prev.filter((img) =>
-        img.status !== 'done' && (!hasSelection || selectedIds.has(img.id)),
+        hasSelection ? selectedIds.has(img.id) : img.status !== 'done',
       );
       const toProcessIds = new Set(toProcess.map((img) => img.id));
-      return prev.map((img) =>
-        toProcessIds.has(img.id) ? { ...img, status: 'processing' as const } : img,
-      );
+      return prev.map((img) => {
+        if (!toProcessIds.has(img.id)) return img;
+        // Revoke old processedUrl if re-compressing
+        if (img.processedUrl) URL.revokeObjectURL(img.processedUrl);
+        return { ...img, processedBlob: null, processedUrl: null, status: 'processing' as const };
+      });
     });
 
     // Yield to React so "processing" state renders before heavy work starts
