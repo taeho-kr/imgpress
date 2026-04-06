@@ -8,6 +8,7 @@ interface Props {
   originalWidth: number;
   originalHeight: number;
   processedBlob: Blob | null;
+  thumbnailUrl: string | null;
   processedUrl: string | null;
   processedWidth: number;
   processedHeight: number;
@@ -22,7 +23,7 @@ interface Props {
 }
 
 export default function ImageCard({
-  id, originalFile, originalUrl,
+  id, originalFile, originalUrl, thumbnailUrl,
   originalWidth, originalHeight,
   processedBlob, processedUrl,
   processedWidth, processedHeight,
@@ -62,7 +63,7 @@ export default function ImageCard({
           cursor: status === 'done' ? 'zoom-in' : 'default',
         }}>
         <img
-          src={processedUrl || originalUrl}
+          src={processedUrl || thumbnailUrl || originalUrl}
           alt={originalFile.name}
           loading="lazy"
           style={{

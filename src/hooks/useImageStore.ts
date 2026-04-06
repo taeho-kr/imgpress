@@ -3,6 +3,7 @@ import {
   type ProcessedImage,
   type ProcessOptions,
   processImage,
+  generateThumbnail,
 } from '../utils/imageProcessor';
 
 let nextId = 0;
@@ -18,6 +19,7 @@ export function useImageStore() {
       id: `img-${nextId++}`,
       originalFile: file,
       originalUrl: URL.createObjectURL(file),
+      thumbnailUrl: null,
       originalWidth: 0,
       originalHeight: 0,
       processedBlob: null,
@@ -27,19 +29,17 @@ export function useImageStore() {
       status: 'pending' as const,
     }));
 
-    // Load original dimensions asynchronously
+    // Generate thumbnails and get dimensions asynchronously
     newImages.forEach((item) => {
-      const img = new Image();
-      img.onload = () => {
+      generateThumbnail(item.originalFile).then(({ url, width, height }) => {
         setImages((prev) =>
           prev.map((p) =>
             p.id === item.id
-              ? { ...p, originalWidth: img.naturalWidth, originalHeight: img.naturalHeight }
+              ? { ...p, thumbnailUrl: url, originalWidth: width, originalHeight: height }
               : p,
           ),
         );
-      };
-      img.src = item.originalUrl;
+      });
     });
 
     setImages((prev) => [...prev, ...newImages]);
@@ -137,6 +137,7 @@ export function useImageStore() {
       const item = prev.find((p) => p.id === id);
       if (item) {
         URL.revokeObjectURL(item.originalUrl);
+        if (item.thumbnailUrl) URL.revokeObjectURL(item.thumbnailUrl);
         if (item.processedUrl) URL.revokeObjectURL(item.processedUrl);
       }
       return prev.filter((p) => p.id !== id);
@@ -152,6 +153,7 @@ export function useImageStore() {
     setImages((prev) => {
       prev.forEach((item) => {
         URL.revokeObjectURL(item.originalUrl);
+        if (item.thumbnailUrl) URL.revokeObjectURL(item.thumbnailUrl);
         if (item.processedUrl) URL.revokeObjectURL(item.processedUrl);
       });
       return [];

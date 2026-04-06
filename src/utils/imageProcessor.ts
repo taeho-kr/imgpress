@@ -7,6 +7,7 @@ export interface ProcessedImage {
   id: string;
   originalFile: File;
   originalUrl: string;
+  thumbnailUrl: string | null;
   originalWidth: number;
   originalHeight: number;
   processedBlob: Blob | null;
@@ -38,6 +39,40 @@ export function formatBytes(bytes: number): string {
 
 export function compressionRatio(original: number, processed: number): number {
   return Math.round((1 - processed / original) * 100);
+}
+
+// ─── Thumbnail Generation ────────────────────────────────────────────────────
+
+const THUMB_MAX = 320;
+
+export async function generateThumbnail(file: File): Promise<{ url: string; width: number; height: number }> {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await loadImage(url);
+    const { naturalWidth: w, naturalHeight: h } = img;
+
+    // Skip thumbnail if already small enough
+    if (w <= THUMB_MAX && h <= THUMB_MAX) {
+      return { url: URL.createObjectURL(file), width: w, height: h };
+    }
+
+    const scale = Math.min(THUMB_MAX / w, THUMB_MAX / h);
+    const tw = Math.round(w * scale);
+    const th = Math.round(h * scale);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = tw;
+    canvas.height = th;
+    const ctx = canvas.getContext('2d')!;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'medium';
+    ctx.drawImage(img, 0, 0, tw, th);
+
+    const blob = await canvasToBlob(canvas, 'image/jpeg', 0.6);
+    return { url: URL.createObjectURL(blob), width: w, height: h };
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
 
 // ─── Worker Pool ──────────────────────────────────────────────────────────────
