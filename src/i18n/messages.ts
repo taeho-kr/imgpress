@@ -72,6 +72,12 @@ export interface Messages {
 
   // Footer
   footer: string;
+
+  // UX enhancements
+  dropPasteHint: string;
+  actDownloadZip: string;
+  selectAll: string;
+  deselectAll: string;
 }
 
 const ko: Messages = {
@@ -123,6 +129,10 @@ const ko: Messages = {
   workspaceFiles: '개 파일',
   workspaceHint: '옵션을 설정하고 변환하기를 누르세요',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: '또는 Ctrl+V로 붙여넣기',
+  actDownloadZip: 'ZIP 다운로드',
+  selectAll: '전체 선택',
+  deselectAll: '선택 해제',
 };
 
 const en: Messages = {
@@ -174,6 +184,10 @@ const en: Messages = {
   workspaceFiles: ' files',
   workspaceHint: 'Set options and click compress',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: 'or paste with Ctrl+V',
+  actDownloadZip: 'Download ZIP',
+  selectAll: 'Select all',
+  deselectAll: 'Deselect all',
 };
 
 const ja: Messages = {
@@ -225,6 +239,10 @@ const ja: Messages = {
   workspaceFiles: '個のファイル',
   workspaceHint: 'オプションを設定して変換をクリック',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: 'またはCtrl+Vで貼り付け',
+  actDownloadZip: 'ZIPダウンロード',
+  selectAll: '全て選択',
+  deselectAll: '選択解除',
 };
 
 const zh: Messages = {
@@ -276,6 +294,10 @@ const zh: Messages = {
   workspaceFiles: '个文件',
   workspaceHint: '设置选项后点击压缩',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: '或按 Ctrl+V 粘贴',
+  actDownloadZip: 'ZIP下载',
+  selectAll: '全选',
+  deselectAll: '取消选择',
 };
 
 const es: Messages = {
@@ -327,6 +349,10 @@ const es: Messages = {
   workspaceFiles: ' archivos',
   workspaceHint: 'Configura opciones y haz clic en comprimir',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: 'o pega con Ctrl+V',
+  actDownloadZip: 'Descargar ZIP',
+  selectAll: 'Seleccionar todo',
+  deselectAll: 'Deseleccionar',
 };
 
 const fr: Messages = {
@@ -378,6 +404,10 @@ const fr: Messages = {
   workspaceFiles: ' fichiers',
   workspaceHint: 'Configurez les options et cliquez sur compresser',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: 'ou collez avec Ctrl+V',
+  actDownloadZip: 'Télécharger ZIP',
+  selectAll: 'Tout sélectionner',
+  deselectAll: 'Tout désélectionner',
 };
 
 const de: Messages = {
@@ -429,6 +459,10 @@ const de: Messages = {
   workspaceFiles: ' Dateien',
   workspaceHint: 'Optionen einstellen und komprimieren klicken',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: 'oder mit Strg+V einfügen',
+  actDownloadZip: 'ZIP herunterladen',
+  selectAll: 'Alle auswählen',
+  deselectAll: 'Auswahl aufheben',
 };
 
 const pt: Messages = {
@@ -480,6 +514,10 @@ const pt: Messages = {
   workspaceFiles: ' arquivos',
   workspaceHint: 'Configure as opções e clique em comprimir',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: 'ou cole com Ctrl+V',
+  actDownloadZip: 'Baixar ZIP',
+  selectAll: 'Selecionar tudo',
+  deselectAll: 'Desmarcar tudo',
 };
 
 const vi: Messages = {
@@ -531,6 +569,10 @@ const vi: Messages = {
   workspaceFiles: ' tệp',
   workspaceHint: 'Cài đặt tùy chọn và nhấp nén',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: 'hoặc dán bằng Ctrl+V',
+  actDownloadZip: 'Tải ZIP',
+  selectAll: 'Chọn tất cả',
+  deselectAll: 'Bỏ chọn',
 };
 
 const th: Messages = {
@@ -582,6 +624,10 @@ const th: Messages = {
   workspaceFiles: ' ไฟล์',
   workspaceHint: 'ตั้งค่าตัวเลือกแล้วคลิกบีบอัด',
   footer: 'ImgPress — Free & Private',
+  dropPasteHint: 'หรือวางด้วย Ctrl+V',
+  actDownloadZip: 'ดาวน์โหลด ZIP',
+  selectAll: 'เลือกทั้งหมด',
+  deselectAll: 'ยกเลิกการเลือก',
 };
 
 export const LOCALES: Record<Locale, { label: string; flag: string }> = {

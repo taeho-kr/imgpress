@@ -726,6 +726,31 @@ input[type="number"]::-webkit-inner-spin-button {
   50%       { box-shadow: 0 0 14px var(--success-glow), 0 0 28px rgba(52,201,138,0.15); }
 }
 
+/* Processing dot — amber pulse */
+.dot-processing {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  animation: dot-processing-pulse 1s ease-in-out infinite;
+}
+
+@keyframes dot-processing-pulse {
+  0%, 100% { box-shadow: 0 0 6px var(--accent-glow); opacity: 1; }
+  50%       { box-shadow: 0 0 16px var(--accent-glow); opacity: 0.6; }
+}
+
+/* Select checkbox visibility on card hover */
+.img-card .card-select-btn {
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.img-card:hover .card-select-btn,
+.img-card .card-select-active {
+  opacity: 1 !important;
+}
+
 /* ─────────────────────────────────────────────
    RESPONSIVE — mobile-first breakpoints
 ───────────────────────────────────────────── */
@@ -835,12 +860,7 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 }
 
-/* Options panel full-width on mobile */
-@media (max-width: 1023px) {
-  .sidebar-sticky {
-    order: -1;
-  }
-}
+/* Options panel: below images on mobile (natural flow) */
 
 /* ─────────────────────────────────────────────
    PRIVACY GUARANTEE BADGE

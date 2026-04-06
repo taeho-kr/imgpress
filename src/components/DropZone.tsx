@@ -128,13 +128,22 @@ export default function DropZone({ onFiles, hasFiles }: Props) {
               : (over ? t.dropTitleHover : t.dropTitle)}
           </p>
           {!hasFiles && (
-            <p style={{
-              fontSize: 15,
-              color: 'var(--text-tertiary)',
-              letterSpacing: '-0.005em',
-            }}>
-              {t.dropFormats}
-            </p>
+            <>
+              <p style={{
+                fontSize: 15,
+                color: 'var(--text-tertiary)',
+                letterSpacing: '-0.005em',
+              }}>
+                {t.dropFormats}
+              </p>
+              <p style={{
+                fontSize: 13,
+                color: 'var(--text-ghost)',
+                marginTop: 2,
+              }}>
+                {t.dropPasteHint}
+              </p>
+            </>
           )}
         </div>
 

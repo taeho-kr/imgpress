@@ -17,6 +17,8 @@ interface Props {
   onRetry?: () => void;
   onCompare?: () => void;
   format: string;
+  selected?: boolean;
+  onToggleSelect?: (id: string) => void;
 }
 
 export default function ImageCard({
@@ -25,6 +27,7 @@ export default function ImageCard({
   processedBlob, processedUrl,
   processedWidth, processedHeight,
   status, onRemove, onRetry, onCompare, format,
+  selected, onToggleSelect,
 }: Props) {
   const { t } = useI18n();
   const ratio = processedBlob ? compressionRatio(originalFile.size, processedBlob.size) : 0;
@@ -139,6 +142,32 @@ export default function ImageCard({
           }}>
             {grew ? '+' : '-'}{Math.abs(ratio)}%
           </div>
+        )}
+
+        {/* Select checkbox */}
+        {onToggleSelect && status !== 'processing' && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleSelect(id); }}
+            aria-label="이미지 선택"
+            className={`card-select-btn${selected ? ' card-select-active' : ''}`}
+            style={{
+              position: 'absolute', bottom: 10, left: 10,
+              width: 22, height: 22, borderRadius: 5,
+              background: selected ? 'var(--accent)' : 'rgba(8,11,18,0.72)',
+              backdropFilter: 'blur(8px)',
+              border: selected ? '1.5px solid var(--accent)' : '1.5px solid rgba(255,255,255,0.2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              zIndex: 2,
+            }}
+          >
+            {selected && (
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#080b12" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
+          </button>
         )}
 
         {/* Remove button — revealed on card hover via CSS */}

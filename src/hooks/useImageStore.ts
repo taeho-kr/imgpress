@@ -10,6 +10,7 @@ let nextId = 0;
 export function useImageStore() {
   const [images, setImages] = useState<ProcessedImage[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const addFiles = useCallback((files: FileList | File[]) => {
     const accepted = Array.from(files).filter((f) => f.type.startsWith('image/'));
@@ -47,12 +48,17 @@ export function useImageStore() {
   const processAll = useCallback(async (options: ProcessOptions) => {
     setIsProcessing(true);
 
-    // Capture pending items and mark them as processing in one setState
+    // Capture items to process: selected non-done, or all non-done if nothing selected
     let toProcess: ProcessedImage[] = [];
     setImages((prev) => {
-      toProcess = prev.filter((img) => img.status !== 'done');
+      const selectedIds = selected;
+      const hasSelection = selectedIds.size > 0;
+      toProcess = prev.filter((img) =>
+        img.status !== 'done' && (!hasSelection || selectedIds.has(img.id)),
+      );
+      const toProcessIds = new Set(toProcess.map((img) => img.id));
       return prev.map((img) =>
-        img.status !== 'done' ? { ...img, status: 'processing' as const } : img,
+        toProcessIds.has(img.id) ? { ...img, status: 'processing' as const } : img,
       );
     });
 
@@ -92,7 +98,8 @@ export function useImageStore() {
     );
 
     setIsProcessing(false);
-  }, []);
+    setSelected(new Set());
+  }, [selected]);
 
   const retryImage = useCallback(async (id: string, options: ProcessOptions) => {
     let targetItem: ProcessedImage | undefined;
@@ -134,6 +141,11 @@ export function useImageStore() {
       }
       return prev.filter((p) => p.id !== id);
     });
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
   }, []);
 
   const clearAll = useCallback(() => {
@@ -144,7 +156,32 @@ export function useImageStore() {
       });
       return [];
     });
+    setSelected(new Set());
   }, []);
 
-  return { images, isProcessing, addFiles, processAll, retryImage, removeImage, clearAll };
+  const toggleSelect = useCallback((id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const selectAll = useCallback(() => {
+    setImages((prev) => {
+      setSelected(new Set(prev.map((img) => img.id)));
+      return prev;
+    });
+  }, []);
+
+  const deselectAll = useCallback(() => {
+    setSelected(new Set());
+  }, []);
+
+  return {
+    images, isProcessing, selected,
+    addFiles, processAll, retryImage, removeImage, clearAll,
+    toggleSelect, selectAll, deselectAll,
+  };
 }

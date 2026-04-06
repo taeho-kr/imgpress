@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import DropZone from './components/DropZone';
 import OptionsPanel from './components/OptionsPanel';
 import ImageCard from './components/ImageCard';
@@ -15,16 +15,54 @@ import {
   getOutputFilename,
 } from './utils/imageProcessor';
 
-const DEFAULT_OPTIONS: ProcessOptions = {
-  quality: 0.8,
-  format: 'image/webp',
-};
+const STORAGE_KEY = 'imgpress-options';
+
+function loadOptions(): ProcessOptions {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.quality && parsed.format) return parsed;
+    }
+  } catch { /* ignore */ }
+  return { quality: 0.8, format: 'image/webp' };
+}
 
 export default function App() {
   const { t } = useI18n();
-  const [options, setOptions] = useState<ProcessOptions>(DEFAULT_OPTIONS);
-  const { images, isProcessing, addFiles, processAll, retryImage, removeImage, clearAll } = useImageStore();
+  const [options, setOptions] = useState<ProcessOptions>(loadOptions);
+  const {
+    images, isProcessing, selected,
+    addFiles, processAll, retryImage, removeImage, clearAll,
+    toggleSelect, selectAll, deselectAll,
+  } = useImageStore();
   const [showPrivacy, setShowPrivacy] = useState(false);
+
+  // Persist options to localStorage
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(options));
+  }, [options]);
+
+  // Global paste handler
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      const files: File[] = [];
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith('image/')) {
+          const file = items[i].getAsFile();
+          if (file) files.push(file);
+        }
+      }
+      if (files.length > 0) {
+        e.preventDefault();
+        addFiles(files);
+      }
+    };
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, [addFiles]);
 
   const done = images.filter((i) => i.status === 'done' && i.processedBlob);
   const totalOrig = done.reduce((s, i) => s + i.originalFile.size, 0);
@@ -34,8 +72,10 @@ export default function App() {
   const hasImages = images.length > 0;
   const [compareImg, setCompareImg] = useState<ProcessedImage | null>(null);
 
-  const downloadAll = () => {
-    done.forEach((img) => {
+  const downloadAll = useCallback(async () => {
+    if (done.length === 1) {
+      // Single file: direct download
+      const img = done[0];
       if (!img.processedBlob) return;
       const url = URL.createObjectURL(img.processedBlob);
       Object.assign(document.createElement('a'), {
@@ -43,8 +83,23 @@ export default function App() {
         download: getOutputFilename(img.originalFile.name, options.format),
       }).click();
       URL.revokeObjectURL(url);
+      return;
+    }
+    // Multiple files: ZIP
+    const JSZip = (await import('jszip')).default;
+    const zip = new JSZip();
+    done.forEach((img) => {
+      if (!img.processedBlob) return;
+      zip.file(getOutputFilename(img.originalFile.name, options.format), img.processedBlob);
     });
-  };
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    Object.assign(document.createElement('a'), {
+      href: url,
+      download: 'imgpress-compressed.zip',
+    }).click();
+    URL.revokeObjectURL(url);
+  }, [done, options.format]);
 
   const FEATURES = [
     {
@@ -165,26 +220,33 @@ export default function App() {
                 <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{t.workspaceHint}</p>
               </div>
 
-              {done.length > 0 && (
+              {(done.length > 0 || isProcessing) && (
                 <div className="anim-scale-in summary-bar" style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '10px 20px', borderRadius: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                    <div className="dot-live" />
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--success)' }}>
-                      {done.length}{t.summaryDone}
+                    <div className={isProcessing ? 'dot-processing' : 'dot-live'} />
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: isProcessing ? 'var(--accent)' : 'var(--success)' }}>
+                      {isProcessing
+                        ? `${done.length}/${images.length}`
+                        : `${done.length}${t.summaryDone}`
+                      }
                     </span>
                   </div>
-                  <div className="stat-divider" />
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' }}>
-                    {formatBytes(totalOrig)} → {formatBytes(totalProc)}
-                  </span>
-                  <div className="stat-divider" />
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700, color: ratio > 0 ? 'var(--success)' : 'var(--error)' }}>
-                    {ratio > 0 ? '-' : '+'}{Math.abs(ratio)}%
-                  </span>
-                  {saved > 0 && (
+                  {done.length > 0 && (
                     <>
                       <div className="stat-divider" />
-                      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatBytes(saved)} {t.summarySaved}</span>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' }}>
+                        {formatBytes(totalOrig)} → {formatBytes(totalProc)}
+                      </span>
+                      <div className="stat-divider" />
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700, color: ratio > 0 ? 'var(--success)' : 'var(--error)' }}>
+                        {ratio > 0 ? '-' : '+'}{Math.abs(ratio)}%
+                      </span>
+                      {saved > 0 && (
+                        <>
+                          <div className="stat-divider" />
+                          <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatBytes(saved)} {t.summarySaved}</span>
+                        </>
+                      )}
                     </>
                   )}
                 </div>
@@ -203,12 +265,32 @@ export default function App() {
               <div className="image-grid">
                 {images.map((img, idx) => (
                   <div key={img.id} className="card-enter" style={{ animationDelay: `${Math.min(idx * 0.04, 0.4)}s` }}>
-                    <ImageCard {...img} onRemove={removeImage} onRetry={() => retryImage(img.id, options)} format={options.format} onCompare={() => img.status === 'done' && img.processedUrl && setCompareImg(img)} />
+                    <ImageCard
+                      {...img}
+                      onRemove={removeImage}
+                      onRetry={() => retryImage(img.id, options)}
+                      format={options.format}
+                      onCompare={() => img.status === 'done' && img.processedUrl && setCompareImg(img)}
+                      selected={selected.has(img.id)}
+                      onToggleSelect={toggleSelect}
+                    />
                   </div>
                 ))}
               </div>
               <div className="sidebar-sticky">
-                <OptionsPanel options={options} onChange={setOptions} onProcess={() => processAll(options)} onClear={clearAll} onDownloadAll={downloadAll} imageCount={images.length} doneCount={done.length} isProcessing={isProcessing} />
+                <OptionsPanel
+                  options={options}
+                  onChange={setOptions}
+                  onProcess={() => processAll(options)}
+                  onClear={clearAll}
+                  onDownloadAll={downloadAll}
+                  imageCount={images.length}
+                  doneCount={done.length}
+                  isProcessing={isProcessing}
+                  selectedCount={selected.size}
+                  onSelectAll={selectAll}
+                  onDeselectAll={deselectAll}
+                />
               </div>
             </div>
           )}

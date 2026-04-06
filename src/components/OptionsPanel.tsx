@@ -10,6 +10,9 @@ interface Props {
   imageCount: number;
   doneCount: number;
   isProcessing: boolean;
+  selectedCount: number;
+  onSelectAll: () => void;
+  onDeselectAll: () => void;
 }
 
 const FORMATS = [
@@ -22,6 +25,7 @@ const FORMATS = [
 export default function OptionsPanel({
   options, onChange, onProcess, onClear, onDownloadAll,
   imageCount, doneCount, isProcessing,
+  selectedCount, onSelectAll, onDeselectAll,
 }: Props) {
   const { t } = useI18n();
   const set = <K extends keyof ProcessOptions>(k: K, v: ProcessOptions[K]) =>
@@ -151,6 +155,20 @@ export default function OptionsPanel({
         </div>
       </Section>
 
+      {/* Selection */}
+      {imageCount > 1 && (
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button
+            onClick={selectedCount < imageCount ? onSelectAll : onDeselectAll}
+            className="btn-ghost"
+            style={{ flex: 1, fontSize: 10, padding: '6px 8px' }}
+          >
+            {selectedCount < imageCount ? t.selectAll : t.deselectAll}
+            {selectedCount > 0 && ` (${selectedCount})`}
+          </button>
+        </div>
+      )}
+
       {/* Divider */}
       <div className="rule" />
 
@@ -168,7 +186,7 @@ export default function OptionsPanel({
                 stroke="currentColor" strokeWidth="2.5" className="spin">
                 <path d="M21 12a9 9 0 1 1-6.219-8.56" />
               </svg>
-              {t.actCompressing}
+              {t.actCompressing} {doneCount}/{imageCount}
             </>
           ) : (
             <>
@@ -176,7 +194,7 @@ export default function OptionsPanel({
                 stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
               </svg>
-              {t.actCompress} · {imageCount}
+              {t.actCompress} · {selectedCount > 0 ? selectedCount : imageCount}
             </>
           )}
         </button>
