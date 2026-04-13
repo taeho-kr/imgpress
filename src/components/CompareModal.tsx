@@ -106,11 +106,12 @@ export default function CompareModal({
           onClick={() => setShowOriginal(!showOriginal)}
           style={{
             position: 'relative',
-            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             overflow: 'hidden',
             cursor: 'pointer',
-            minHeight: 300,
-            maxHeight: 'calc(90vh - 160px)',
+            padding: 16,
             background: 'rgba(0,0,0,0.3)',
           }}
         >
@@ -118,7 +119,10 @@ export default function CompareModal({
             src={showOriginal ? originalUrl : processedUrl}
             alt={showOriginal ? t.compareOriginal : t.compareCompressed}
             style={{
-              display: 'block', width: '100%', height: '100%', objectFit: 'contain',
+              display: 'block',
+              maxWidth: '100%',
+              maxHeight: 'calc(90vh - 180px)',
+              objectFit: 'contain',
             }}
           />
 
