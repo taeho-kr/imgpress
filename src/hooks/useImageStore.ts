@@ -48,14 +48,13 @@ export function useImageStore() {
   const processAll = useCallback(async (options: ProcessOptions) => {
     setIsProcessing(true);
 
-    // Selected → process those (even if done, for re-compress)
-    // No selection → process all non-done
+    // Selected → process those; No selection → process all
     let toProcess: ProcessedImage[] = [];
     setImages((prev) => {
       const selectedIds = selected;
       const hasSelection = selectedIds.size > 0;
       toProcess = prev.filter((img) =>
-        hasSelection ? selectedIds.has(img.id) : img.status !== 'done',
+        hasSelection ? selectedIds.has(img.id) : true,
       );
       const toProcessIds = new Set(toProcess.map((img) => img.id));
       return prev.map((img) => {
