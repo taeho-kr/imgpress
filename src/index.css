@@ -992,43 +992,6 @@ input[type="number"]::-webkit-inner-spin-button {
   border-color: rgba(232, 160, 48, 0.2);
 }
 
-.showcase-handle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-  pointer-events: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.showcase-image-area:hover .showcase-handle {
-  transform: translate(-50%, -50%) scale(1.15);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-}
-
-.showcase-label {
-  position: absolute;
-  top: 8px;
-  z-index: 3;
-  font-size: 9px;
-  font-weight: 600;
-  padding: 3px 7px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.55);
-  color: rgba(255, 255, 255, 0.75);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
 .showcase-badge {
   position: absolute;
   bottom: 8px;
@@ -1043,18 +1006,6 @@ input[type="number"]::-webkit-inner-spin-button {
   color: #080b12;
   letter-spacing: -0.02em;
   pointer-events: none;
-}
-
-.showcase-toggle-btn {
-  flex: 1;
-  padding: 5px;
-  border-radius: 6px;
-  border: none;
-  font-size: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  min-height: 28px;
 }
 
 .showcase-cta {
