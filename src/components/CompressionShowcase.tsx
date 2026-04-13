@@ -1,18 +1,28 @@
 import { useState, useRef, useEffect } from 'react';
 import { useI18n } from '../i18n/useI18n';
+import CompareModal from './CompareModal';
 
 interface CardData {
   label: string;
-  originalSize: string;
-  compressedSize: string;
+  originalUrl: string;
+  compressedUrl: string;
+  originalSize: number;
+  compressedSize: number;
+  width: number;
+  height: number;
   reduction: number;
-  img: string;
+}
+
+function formatSize(bytes: number): string {
+  if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  return Math.round(bytes / 1024) + ' KB';
 }
 
 export default function CompressionShowcase({ onScrollToDropZone }: { onScrollToDropZone: () => void }) {
   const { t } = useI18n();
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [compareCard, setCompareCard] = useState<CardData | null>(null);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -33,60 +43,94 @@ export default function CompressionShowcase({ onScrollToDropZone }: { onScrollTo
   const cards: CardData[] = [
     {
       label: t.showcaseCard1,
-      originalSize: '4.2 MB',
-      compressedSize: '310 KB',
-      reduction: 93,
-      img: '/demo/card-1.webp',
+      originalUrl: '/demo/card-1-original.jpg',
+      compressedUrl: '/demo/card-1.webp',
+      originalSize: 301784,
+      compressedSize: 118608,
+      width: 1200,
+      height: 800,
+      reduction: 61,
     },
     {
       label: t.showcaseCard2,
-      originalSize: '1.8 MB',
-      compressedSize: '124 KB',
-      reduction: 93,
-      img: '/demo/card-2.webp',
+      originalUrl: '/demo/card-2-original.jpg',
+      compressedUrl: '/demo/card-2.webp',
+      originalSize: 226579,
+      compressedSize: 43994,
+      width: 1200,
+      height: 800,
+      reduction: 81,
     },
     {
       label: t.showcaseCard3,
-      originalSize: '980 KB',
-      compressedSize: '68 KB',
-      reduction: 93,
-      img: '/demo/card-3.webp',
+      originalUrl: '/demo/card-3-original.jpg',
+      compressedUrl: '/demo/card-3.webp',
+      originalSize: 63349,
+      compressedSize: 8776,
+      width: 1200,
+      height: 800,
+      reduction: 86,
     },
   ];
 
   return (
-    <section
-      ref={sectionRef}
-      className={`showcase-section ${isVisible ? 'showcase-visible' : ''}`}
-      style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}
-    >
-      <h2 style={{
-        fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
-        fontWeight: 700,
-        letterSpacing: '-0.025em',
-        color: 'var(--text-primary)',
-        marginBottom: 28,
-      }}>
-        {t.showcaseTitle}
-      </h2>
-
-      <div className="showcase-grid">
-        {cards.map((card, i) => (
-          <ShowcaseCard key={i} card={card} index={i} isVisible={isVisible} />
-        ))}
-      </div>
-
-      <button
-        onClick={onScrollToDropZone}
-        className="showcase-cta"
+    <>
+      <section
+        ref={sectionRef}
+        className={`showcase-section ${isVisible ? 'showcase-visible' : ''}`}
+        style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}
       >
-        {t.showcaseCta} <span style={{ marginLeft: 4, display: 'inline-block' }}>↓</span>
-      </button>
-    </section>
+        <h2 style={{
+          fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
+          fontWeight: 700,
+          letterSpacing: '-0.025em',
+          color: 'var(--text-primary)',
+          marginBottom: 28,
+        }}>
+          {t.showcaseTitle}
+        </h2>
+
+        <div className="showcase-grid">
+          {cards.map((card, i) => (
+            <ShowcaseCard
+              key={i}
+              card={card}
+              index={i}
+              isVisible={isVisible}
+              onClick={() => setCompareCard(card)}
+            />
+          ))}
+        </div>
+
+        <button
+          onClick={onScrollToDropZone}
+          className="showcase-cta"
+        >
+          {t.showcaseCta} <span style={{ marginLeft: 4, display: 'inline-block' }}>↓</span>
+        </button>
+      </section>
+
+      {compareCard && (
+        <CompareModal
+          originalUrl={compareCard.originalUrl}
+          processedUrl={compareCard.compressedUrl}
+          originalSize={compareCard.originalSize}
+          processedSize={compareCard.compressedSize}
+          originalWidth={compareCard.width}
+          originalHeight={compareCard.height}
+          processedWidth={compareCard.width}
+          processedHeight={compareCard.height}
+          fileName={compareCard.label}
+          onClose={() => setCompareCard(null)}
+        />
+      )}
+    </>
   );
 }
 
-function ShowcaseCard({ card, index, isVisible }: { card: CardData; index: number; isVisible: boolean }) {
+function ShowcaseCard({ card, index, isVisible, onClick }: {
+  card: CardData; index: number; isVisible: boolean; onClick: () => void;
+}) {
   const [animatedReduction, setAnimatedReduction] = useState(0);
 
   useEffect(() => {
@@ -115,7 +159,8 @@ function ShowcaseCard({ card, index, isVisible }: { card: CardData; index: numbe
   return (
     <div
       className={`showcase-card glass-1 ${isVisible ? 'showcase-card-visible' : ''}`}
-      style={{ animationDelay: `${index * 0.08}s` }}
+      style={{ animationDelay: `${index * 0.08}s`, cursor: 'pointer' }}
+      onClick={onClick}
     >
       {/* Image */}
       <div style={{
@@ -125,8 +170,8 @@ function ShowcaseCard({ card, index, isVisible }: { card: CardData; index: numbe
         borderRadius: '21px 21px 0 0',
       }}>
         <img
-          src={card.img}
-          alt=""
+          src={card.compressedUrl}
+          alt={card.label}
           loading="lazy"
           decoding="async"
           style={{
@@ -165,9 +210,9 @@ function ShowcaseCard({ card, index, isVisible }: { card: CardData; index: numbe
           fontSize: 13,
           fontVariantNumeric: 'tabular-nums',
         }}>
-          <span style={{ color: 'var(--text-muted)' }}>{card.originalSize}</span>
+          <span style={{ color: 'var(--text-muted)' }}>{formatSize(card.originalSize)}</span>
           <span style={{ color: 'var(--text-ghost)', fontSize: 10 }}>→</span>
-          <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{card.compressedSize}</span>
+          <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{formatSize(card.compressedSize)}</span>
         </div>
 
         {/* Progress bar */}
