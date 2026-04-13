@@ -78,6 +78,13 @@ export interface Messages {
   actDownloadZip: string;
   selectAll: string;
   deselectAll: string;
+
+  // Showcase
+  showcaseTitle: string;
+  showcaseCta: string;
+  showcaseCard1: string;
+  showcaseCard2: string;
+  showcaseCard3: string;
 }
 
 const ko: Messages = {
@@ -133,6 +140,11 @@ const ko: Messages = {
   actDownloadZip: 'ZIP 다운로드',
   selectAll: '전체 선택',
   deselectAll: '선택 해제',
+  showcaseTitle: '압축 결과를 직접 확인하세요',
+  showcaseCta: '직접 이미지를 올려보세요',
+  showcaseCard1: '풍경 사진',
+  showcaseCard2: 'UI 스크린샷',
+  showcaseCard3: '벡터 그래픽',
 };
 
 const en: Messages = {
@@ -188,6 +200,11 @@ const en: Messages = {
   actDownloadZip: 'Download ZIP',
   selectAll: 'Select all',
   deselectAll: 'Deselect all',
+  showcaseTitle: 'See the compression results',
+  showcaseCta: 'Try with your own images',
+  showcaseCard1: 'Landscape',
+  showcaseCard2: 'UI Screenshot',
+  showcaseCard3: 'Vector',
 };
 
 const ja: Messages = {
@@ -243,6 +260,11 @@ const ja: Messages = {
   actDownloadZip: 'ZIPダウンロード',
   selectAll: '全て選択',
   deselectAll: '選択解除',
+  showcaseTitle: '圧縮結果をご確認ください',
+  showcaseCta: 'あなたの画像で試す',
+  showcaseCard1: '風景写真',
+  showcaseCard2: 'UIスクリーンショット',
+  showcaseCard3: 'ベクターグラフィック',
 };
 
 const zh: Messages = {
@@ -298,6 +320,11 @@ const zh: Messages = {
   actDownloadZip: 'ZIP下载',
   selectAll: '全选',
   deselectAll: '取消选择',
+  showcaseTitle: '查看压缩效果',
+  showcaseCta: '用您的图片试试',
+  showcaseCard1: '风景照片',
+  showcaseCard2: 'UI截图',
+  showcaseCard3: '矢量图形',
 };
 
 const es: Messages = {
@@ -353,6 +380,11 @@ const es: Messages = {
   actDownloadZip: 'Descargar ZIP',
   selectAll: 'Seleccionar todo',
   deselectAll: 'Deseleccionar',
+  showcaseTitle: 'Vea los resultados',
+  showcaseCta: 'Prueba con tus imágenes',
+  showcaseCard1: 'Paisaje',
+  showcaseCard2: 'Captura de UI',
+  showcaseCard3: 'Gráfico vectorial',
 };
 
 const fr: Messages = {
@@ -408,6 +440,11 @@ const fr: Messages = {
   actDownloadZip: 'Télécharger ZIP',
   selectAll: 'Tout sélectionner',
   deselectAll: 'Tout désélectionner',
+  showcaseTitle: 'Voyez les résultats',
+  showcaseCta: 'Essayez avec vos images',
+  showcaseCard1: 'Paysage',
+  showcaseCard2: "Capture d'interface",
+  showcaseCard3: 'Graphique vectoriel',
 };
 
 const de: Messages = {
@@ -463,6 +500,11 @@ const de: Messages = {
   actDownloadZip: 'ZIP herunterladen',
   selectAll: 'Alle auswählen',
   deselectAll: 'Auswahl aufheben',
+  showcaseTitle: 'Ergebnisse ansehen',
+  showcaseCta: 'Mit eigenen Bildern testen',
+  showcaseCard1: 'Landschaft',
+  showcaseCard2: 'UI-Screenshot',
+  showcaseCard3: 'Vektorgrafik',
 };
 
 const pt: Messages = {
@@ -518,6 +560,11 @@ const pt: Messages = {
   actDownloadZip: 'Baixar ZIP',
   selectAll: 'Selecionar tudo',
   deselectAll: 'Desmarcar tudo',
+  showcaseTitle: 'Veja os resultados',
+  showcaseCta: 'Experimente com suas imagens',
+  showcaseCard1: 'Paisagem',
+  showcaseCard2: 'Captura de tela',
+  showcaseCard3: 'Gráfico vetorial',
 };
 
 const vi: Messages = {
@@ -573,6 +620,11 @@ const vi: Messages = {
   actDownloadZip: 'Tải ZIP',
   selectAll: 'Chọn tất cả',
   deselectAll: 'Bỏ chọn',
+  showcaseTitle: 'Xem kết quả nén',
+  showcaseCta: 'Thử với ảnh của bạn',
+  showcaseCard1: 'Phong cảnh',
+  showcaseCard2: 'Ảnh giao diện',
+  showcaseCard3: 'Đồ họa vector',
 };
 
 const th: Messages = {
@@ -628,6 +680,11 @@ const th: Messages = {
   actDownloadZip: 'ดาวน์โหลด ZIP',
   selectAll: 'เลือกทั้งหมด',
   deselectAll: 'ยกเลิกการเลือก',
+  showcaseTitle: 'ดูผลการบีบอัด',
+  showcaseCta: 'ลองกับรูปภาพของคุณ',
+  showcaseCard1: 'ภาพทิวทัศน์',
+  showcaseCard2: 'ภาพหน้าจอ UI',
+  showcaseCard3: 'กราฟิกเวกเตอร์',
 };
 
 export const LOCALES: Record<Locale, { label: string; flag: string }> = {

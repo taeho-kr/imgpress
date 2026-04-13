@@ -5,6 +5,7 @@ import ImageCard from './components/ImageCard';
 import CompareModal from './components/CompareModal';
 import PrivacyModal from './components/PrivacyModal';
 import LocaleSwitcher from './components/LocaleSwitcher';
+import CompressionShowcase from './components/CompressionShowcase';
 import { useI18n } from './i18n/useI18n';
 import { useImageStore } from './hooks/useImageStore';
 import {
@@ -254,8 +255,19 @@ export default function App() {
             </div>
           )}
 
+          {/* Showcase — between Hero and DropZone */}
+          {!hasImages && (
+            <div className="anim-fade-up anim-delay-3" style={{ marginBottom: 48 }}>
+              <CompressionShowcase
+                onScrollToDropZone={() =>
+                  document.getElementById('dropzone')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                }
+              />
+            </div>
+          )}
+
           {/* Drop zone */}
-          <div className={hasImages ? '' : 'anim-fade-up anim-delay-3'}>
+          <div id="dropzone" className={hasImages ? '' : 'anim-fade-up anim-delay-4'}>
             <DropZone onFiles={addFiles} hasFiles={hasImages} />
           </div>
 
@@ -297,7 +309,7 @@ export default function App() {
 
           {/* Features */}
           {!hasImages && (
-            <div className="feature-grid anim-fade-up anim-delay-4" style={{ maxWidth: 720, margin: '72px auto 0' }}>
+            <div className="feature-grid anim-fade-up anim-delay-5" style={{ maxWidth: 720, margin: '72px auto 0' }}>
               {FEATURES.map((f, i) => (
                 <FeatureCard key={i} feature={f} delay={i} />
               ))}
@@ -306,7 +318,7 @@ export default function App() {
 
           {/* Trust */}
           {!hasImages && (
-            <div className="trust-row anim-fade-up anim-delay-5" style={{ marginTop: 44 }}>
+            <div className="trust-row anim-fade-up" style={{ marginTop: 44, animationDelay: '0.48s' }}>
               {TRUST.map((label) => (
                 <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 14, color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '-0.005em' }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(232,160,48,0.5)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
