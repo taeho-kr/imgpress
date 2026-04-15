@@ -89,6 +89,14 @@ export interface Messages {
   heicDetected: string;
   heicConverting: string;
   heicFailed: string;
+
+  // Target size mode
+  optModeQuality: string;
+  optModeTargetSize: string;
+  optTargetSize: string;
+  optTargetSizeHint: string;
+  optTargetSizeMissed: string;
+  optTargetSizeDisabledPng: string;
 }
 
 const ko: Messages = {
@@ -151,6 +159,12 @@ const ko: Messages = {
   heicDetected: 'HEIC 파일 감지',
   heicConverting: 'iPhone 사진 변환 중...',
   heicFailed: 'HEIC 변환 실패',
+  optModeQuality: '품질',
+  optModeTargetSize: '용량',
+  optTargetSize: '목표 용량',
+  optTargetSizeHint: '결과 파일 크기',
+  optTargetSizeMissed: '목표 용량 달성 실패 — 최대 압축 적용',
+  optTargetSizeDisabledPng: 'PNG는 용량 모드를 지원하지 않습니다',
 };
 
 const en: Messages = {
@@ -213,6 +227,12 @@ const en: Messages = {
   heicDetected: 'HEIC file detected',
   heicConverting: 'Converting iPhone photos...',
   heicFailed: 'HEIC conversion failed',
+  optModeQuality: 'Quality',
+  optModeTargetSize: 'Size',
+  optTargetSize: 'Target size',
+  optTargetSizeHint: 'Result file size',
+  optTargetSizeMissed: 'Target size not met — max compression applied',
+  optTargetSizeDisabledPng: 'PNG does not support target size mode',
 };
 
 const ja: Messages = {
@@ -275,6 +295,12 @@ const ja: Messages = {
   heicDetected: 'HEICファイルを検出',
   heicConverting: 'iPhone写真を変換中...',
   heicFailed: 'HEIC変換に失敗',
+  optModeQuality: '品質',
+  optModeTargetSize: '容量',
+  optTargetSize: '目標容量',
+  optTargetSizeHint: '結果ファイルサイズ',
+  optTargetSizeMissed: '目標容量に達しません — 最大圧縮を適用',
+  optTargetSizeDisabledPng: 'PNGは容量モードに対応しません',
 };
 
 const zh: Messages = {
@@ -337,6 +363,12 @@ const zh: Messages = {
   heicDetected: '检测到 HEIC 文件',
   heicConverting: '正在转换 iPhone 照片...',
   heicFailed: 'HEIC 转换失败',
+  optModeQuality: '质量',
+  optModeTargetSize: '容量',
+  optTargetSize: '目标容量',
+  optTargetSizeHint: '结果文件大小',
+  optTargetSizeMissed: '未达目标容量 — 已应用最大压缩',
+  optTargetSizeDisabledPng: 'PNG 不支持容量模式',
 };
 
 const es: Messages = {
@@ -399,6 +431,12 @@ const es: Messages = {
   heicDetected: 'Archivo HEIC detectado',
   heicConverting: 'Convirtiendo fotos de iPhone...',
   heicFailed: 'Conversión HEIC fallida',
+  optModeQuality: 'Calidad',
+  optModeTargetSize: 'Tamaño',
+  optTargetSize: 'Tamaño objetivo',
+  optTargetSizeHint: 'Tamaño del archivo final',
+  optTargetSizeMissed: 'Tamaño objetivo no alcanzado — compresión máxima',
+  optTargetSizeDisabledPng: 'PNG no admite modo de tamaño',
 };
 
 const fr: Messages = {
@@ -461,6 +499,12 @@ const fr: Messages = {
   heicDetected: 'Fichier HEIC détecté',
   heicConverting: 'Conversion des photos iPhone...',
   heicFailed: 'Échec de conversion HEIC',
+  optModeQuality: 'Qualité',
+  optModeTargetSize: 'Taille',
+  optTargetSize: 'Taille cible',
+  optTargetSizeHint: 'Taille du fichier final',
+  optTargetSizeMissed: 'Taille cible non atteinte — compression maximale',
+  optTargetSizeDisabledPng: 'PNG ne gère pas le mode taille',
 };
 
 const de: Messages = {
@@ -523,6 +567,12 @@ const de: Messages = {
   heicDetected: 'HEIC-Datei erkannt',
   heicConverting: 'iPhone-Fotos werden konvertiert...',
   heicFailed: 'HEIC-Konvertierung fehlgeschlagen',
+  optModeQuality: 'Qualität',
+  optModeTargetSize: 'Größe',
+  optTargetSize: 'Zielgröße',
+  optTargetSizeHint: 'Ergebnisdateigröße',
+  optTargetSizeMissed: 'Zielgröße nicht erreicht — maximale Kompression',
+  optTargetSizeDisabledPng: 'PNG unterstützt keinen Größenmodus',
 };
 
 const pt: Messages = {
@@ -585,6 +635,12 @@ const pt: Messages = {
   heicDetected: 'Arquivo HEIC detectado',
   heicConverting: 'Convertendo fotos do iPhone...',
   heicFailed: 'Falha na conversão HEIC',
+  optModeQuality: 'Qualidade',
+  optModeTargetSize: 'Tamanho',
+  optTargetSize: 'Tamanho alvo',
+  optTargetSizeHint: 'Tamanho do arquivo final',
+  optTargetSizeMissed: 'Tamanho alvo não atingido — compressão máxima',
+  optTargetSizeDisabledPng: 'PNG não suporta modo de tamanho',
 };
 
 const vi: Messages = {
@@ -647,6 +703,12 @@ const vi: Messages = {
   heicDetected: 'Đã phát hiện tệp HEIC',
   heicConverting: 'Đang chuyển đổi ảnh iPhone...',
   heicFailed: 'Chuyển đổi HEIC thất bại',
+  optModeQuality: 'Chất lượng',
+  optModeTargetSize: 'Kích thước',
+  optTargetSize: 'Kích thước mục tiêu',
+  optTargetSizeHint: 'Kích thước tệp kết quả',
+  optTargetSizeMissed: 'Không đạt kích thước — nén tối đa',
+  optTargetSizeDisabledPng: 'PNG không hỗ trợ chế độ kích thước',
 };
 
 const th: Messages = {
@@ -709,6 +771,12 @@ const th: Messages = {
   heicDetected: 'ตรวจพบไฟล์ HEIC',
   heicConverting: 'กำลังแปลงรูปภาพ iPhone...',
   heicFailed: 'การแปลง HEIC ล้มเหลว',
+  optModeQuality: 'คุณภาพ',
+  optModeTargetSize: 'ขนาด',
+  optTargetSize: 'ขนาดเป้าหมาย',
+  optTargetSizeHint: 'ขนาดไฟล์ผลลัพธ์',
+  optTargetSizeMissed: 'ไม่ถึงขนาดเป้าหมาย — ใช้การบีบอัดสูงสุด',
+  optTargetSizeDisabledPng: 'PNG ไม่รองรับโหมดขนาด',
 };
 
 export const LOCALES: Record<Locale, { label: string; flag: string }> = {

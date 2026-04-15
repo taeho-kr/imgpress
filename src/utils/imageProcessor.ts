@@ -1,6 +1,10 @@
+export type ProcessMode = 'quality' | 'target_size';
+
 export interface ProcessOptions {
-  quality: number; // 0.0 ~ 1.0
+  quality: number; // 0.0 ~ 1.0, used when mode === 'quality'
   format: 'image/jpeg' | 'image/png' | 'image/webp';
+  mode: ProcessMode;
+  targetSizeKB: number; // used when mode === 'target_size'
 }
 
 export interface ProcessedImage {
@@ -180,16 +184,85 @@ async function processOnMainThread(
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
-export async function processImage(
+async function encodeOnce(
   file: File,
-  options: ProcessOptions,
+  format: ProcessOptions['format'],
+  quality: number,
 ): Promise<{ blob: Blob; width: number; height: number }> {
+  const opts: ProcessOptions = { format, quality, mode: 'quality', targetSizeKB: 0 };
   if (supportsWorker) {
     try {
-      return await processWithWorker(file, options);
+      return await processWithWorker(file, opts);
     } catch {
       // fall through to main thread
     }
   }
-  return processOnMainThread(file, options);
+  return processOnMainThread(file, opts);
+}
+
+/**
+ * Binary-search quality to hit a target file size. Only meaningful for lossy
+ * formats (JPEG/WebP) — PNG ignores the quality param, so callers should
+ * avoid this path for PNG.
+ *
+ * Returns the best-achieved result plus a flag indicating whether the target
+ * was met (size <= target). Caller can surface a "target missed" toast.
+ */
+async function processWithTargetSize(
+  file: File,
+  format: ProcessOptions['format'],
+  targetBytes: number,
+): Promise<{ blob: Blob; width: number; height: number; achieved: boolean; quality: number }> {
+  let lo = 0.1;
+  let hi = 0.98;
+  let best: { blob: Blob; width: number; height: number; quality: number } | null = null;
+  let bestUnderTarget: typeof best = null;
+
+  const MAX_ITERS = 7;
+  for (let i = 0; i < MAX_ITERS; i++) {
+    const q = (lo + hi) / 2;
+    const r = await encodeOnce(file, format, q);
+    const candidate = { ...r, quality: q };
+
+    // Track best-under-target (prefer largest blob that still fits).
+    if (r.blob.size <= targetBytes) {
+      if (!bestUnderTarget || r.blob.size > bestUnderTarget.blob.size) {
+        bestUnderTarget = candidate;
+      }
+    }
+    // Track overall closest by absolute diff (fallback when target unattainable).
+    if (!best || Math.abs(r.blob.size - targetBytes) < Math.abs(best.blob.size - targetBytes)) {
+      best = candidate;
+    }
+
+    // Converged within 5% of target → stop early.
+    if (Math.abs(r.blob.size - targetBytes) / targetBytes < 0.05) break;
+
+    if (r.blob.size > targetBytes) hi = q;
+    else lo = q;
+  }
+
+  const chosen = bestUnderTarget ?? best!;
+  return { ...chosen, achieved: !!bestUnderTarget };
+}
+
+export async function processImage(
+  file: File,
+  options: ProcessOptions,
+): Promise<{ blob: Blob; width: number; height: number; targetAchieved?: boolean }> {
+  // Target-size mode is only meaningful for lossy formats.
+  if (options.mode === 'target_size' && options.format !== 'image/png') {
+    const result = await processWithTargetSize(
+      file,
+      options.format,
+      options.targetSizeKB * 1024,
+    );
+    return {
+      blob: result.blob,
+      width: result.width,
+      height: result.height,
+      targetAchieved: result.achieved,
+    };
+  }
+  return encodeOnce(file, options.format, options.quality);
 }

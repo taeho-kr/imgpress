@@ -24,10 +24,17 @@ function loadOptions(): ProcessOptions {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed.quality && parsed.format) return parsed;
+      if (parsed.quality && parsed.format) {
+        return {
+          quality: parsed.quality,
+          format: parsed.format,
+          mode: parsed.mode === 'target_size' ? 'target_size' : 'quality',
+          targetSizeKB: typeof parsed.targetSizeKB === 'number' ? parsed.targetSizeKB : 500,
+        };
+      }
     }
   } catch { /* ignore */ }
-  return { quality: 0.8, format: 'image/webp' };
+  return { quality: 0.8, format: 'image/webp', mode: 'quality', targetSizeKB: 500 };
 }
 
 export default function App() {

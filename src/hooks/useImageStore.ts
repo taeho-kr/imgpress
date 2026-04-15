@@ -15,6 +15,7 @@ import {
   trackCompressError,
   trackFileUpload,
   trackHeicDetected,
+  trackTargetSizeResult,
 } from '../utils/analytics';
 import { decodeHeic, isHeicFile } from '../utils/heicDecoder';
 import { showToast } from '../components/Toast';
@@ -142,6 +143,7 @@ export function useImageStore() {
     await new Promise<void>((r) => setTimeout(r, 0));
 
     // Process all in parallel (worker pool limits concurrency internally)
+    let anyTargetMissed = false;
     await Promise.all(
       toProcess.map(async (item) => {
         try {
@@ -152,11 +154,21 @@ export function useImageStore() {
           const pct = Math.round((1 - sizeAfter / sizeBefore) * 100);
           trackCompressComplete({
             format: mimeShort(options.format),
-            mode: 'quality',
+            mode: options.mode,
             size_before_bucket: sizeBucket(sizeBefore),
             size_after_bucket: sizeBucket(sizeAfter),
             ratio_bucket: ratioBucket(pct),
           });
+          if (options.mode === 'target_size' && options.format !== 'image/png') {
+            const achieved = result.targetAchieved === true;
+            if (!achieved) anyTargetMissed = true;
+            const targetBytes = options.targetSizeKB * 1024;
+            const diffPct = Math.round(((sizeAfter - targetBytes) / targetBytes) * 100);
+            trackTargetSizeResult({
+              achieved,
+              diff_bucket: ratioBucket(Math.abs(diffPct)),
+            });
+          }
           setImages((curr) =>
             curr.map((p) =>
               p.id === item.id
@@ -186,6 +198,11 @@ export function useImageStore() {
 
     setIsProcessing(false);
     setSelected(new Set());
+
+    if (anyTargetMissed) {
+      const t = getI18nMessages();
+      showToast({ message: t.optTargetSizeMissed, kind: 'error', duration: 3500 });
+    }
   }, [selected]);
 
   const retryImage = useCallback(async (id: string, options: ProcessOptions) => {
@@ -208,11 +225,21 @@ export function useImageStore() {
       const pct = Math.round((1 - sizeAfter / sizeBefore) * 100);
       trackCompressComplete({
         format: mimeShort(options.format),
-        mode: 'quality',
+        mode: options.mode,
         size_before_bucket: sizeBucket(sizeBefore),
         size_after_bucket: sizeBucket(sizeAfter),
         ratio_bucket: ratioBucket(pct),
       });
+      if (options.mode === 'target_size' && options.format !== 'image/png') {
+        const achieved = result.targetAchieved === true;
+        const targetBytes = options.targetSizeKB * 1024;
+        const diffPct = Math.round(((sizeAfter - targetBytes) / targetBytes) * 100);
+        trackTargetSizeResult({ achieved, diff_bucket: ratioBucket(Math.abs(diffPct)) });
+        if (!achieved) {
+          const t = getI18nMessages();
+          showToast({ message: t.optTargetSizeMissed, kind: 'error', duration: 3500 });
+        }
+      }
       setImages((curr) =>
         curr.map((p) =>
           p.id === id

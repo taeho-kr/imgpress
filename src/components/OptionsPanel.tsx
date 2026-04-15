@@ -32,9 +32,20 @@ export default function OptionsPanel({
   const set = <K extends keyof ProcessOptions>(k: K, v: ProcessOptions[K]) =>
     onChange({ ...options, [k]: v });
 
+  const isLossy = options.format !== 'image/png';
+
   const selectFormat = (value: ProcessOptions['format']) => {
-    set('format', value);
+    // PNG is lossless, so target-size mode can't honor a target — silently
+    // downshift to quality mode when switching to PNG.
+    const nextMode: ProcessOptions['mode'] =
+      value === 'image/png' ? 'quality' : options.mode;
+    onChange({ ...options, format: value, mode: nextMode });
     trackFormatSelected({ format: mimeShort(value), source: 'user' });
+  };
+
+  const setMode = (next: ProcessOptions['mode']) => {
+    if (next === 'target_size' && !isLossy) return; // disabled for PNG
+    set('mode', next);
   };
 
   const qualityPct = Math.round(options.quality * 100);
@@ -104,10 +115,38 @@ export default function OptionsPanel({
         </div>
       </Section>
 
-      {/* Quality */}
-      <Section
-        label={t.optQuality}
-        right={
+      {/* Quality / Target size — segmented mode switch */}
+      <div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 10,
+          gap: 8,
+        }}>
+          {/* Mode segment switch (replaces the static label) */}
+          <div style={{
+            display: 'flex',
+            background: 'rgba(255,255,255,0.04)',
+            borderRadius: 8,
+            padding: 3,
+            gap: 2,
+          }}>
+            <ModePill
+              active={options.mode === 'quality'}
+              onClick={() => setMode('quality')}
+              label={t.optModeQuality}
+            />
+            <ModePill
+              active={options.mode === 'target_size'}
+              onClick={() => setMode('target_size')}
+              label={t.optModeTargetSize}
+              disabled={!isLossy}
+              title={!isLossy ? t.optTargetSizeDisabledPng : undefined}
+            />
+          </div>
+
+          {/* Right-side value badge */}
           <span style={{
             fontFamily: 'var(--font-mono)',
             fontSize: 12,
@@ -118,48 +157,111 @@ export default function OptionsPanel({
             padding: '2px 8px',
             borderRadius: 6,
             letterSpacing: '-0.01em',
+            whiteSpace: 'nowrap',
           }}>
-            {qualityPct}%
+            {options.mode === 'quality'
+              ? `${qualityPct}%`
+              : `~${formatTargetSize(options.targetSizeKB)}`}
           </span>
-        }
-      >
-        <div style={{ position: 'relative' }}>
-          {/* Visual fill track behind the range input */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: 0,
-            transform: 'translateY(-50%)',
-            height: 3,
-            width: trackFill,
-            borderRadius: 2,
-            background: 'linear-gradient(90deg, rgba(232,160,48,0.4), var(--accent))',
-            pointerEvents: 'none',
-            zIndex: 1,
-            transition: 'width 0.1s ease',
-          }} />
-          <input
-            type="range"
-            min={0.1}
-            max={1}
-            step={0.05}
-            value={options.quality}
-            onChange={(e) => set('quality', Number(e.target.value))}
-            style={{ width: '100%', position: 'relative', zIndex: 2 }}
-          />
         </div>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginTop: 6,
-          fontSize: 10,
-          color: 'var(--text-ghost)',
-          letterSpacing: '0.02em',
-        }}>
-          <span>{t.optQualityLow}</span>
-          <span>{t.optQualityHigh}</span>
-        </div>
-      </Section>
+
+        {options.mode === 'quality' ? (
+          <>
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: 0,
+                transform: 'translateY(-50%)',
+                height: 3,
+                width: trackFill,
+                borderRadius: 2,
+                background: 'linear-gradient(90deg, rgba(232,160,48,0.4), var(--accent))',
+                pointerEvents: 'none',
+                zIndex: 1,
+                transition: 'width 0.1s ease',
+              }} />
+              <input
+                type="range"
+                min={0.1}
+                max={1}
+                step={0.05}
+                value={options.quality}
+                onChange={(e) => set('quality', Number(e.target.value))}
+                style={{ width: '100%', position: 'relative', zIndex: 2 }}
+              />
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginTop: 6,
+              fontSize: 10,
+              color: 'var(--text-ghost)',
+              letterSpacing: '0.02em',
+            }}>
+              <span>{t.optQualityLow}</span>
+              <span>{t.optQualityHigh}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{
+              display: 'flex',
+              alignItems: 'stretch',
+              gap: 0,
+              borderRadius: 8,
+              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.03)',
+              overflow: 'hidden',
+            }}>
+              <input
+                type="number"
+                min={20}
+                max={50000}
+                step={50}
+                value={options.targetSizeKB}
+                onChange={(e) => {
+                  const n = Math.max(20, Math.min(50000, Number(e.target.value) || 0));
+                  set('targetSizeKB', n);
+                }}
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  padding: '8px 12px',
+                  fontSize: 14,
+                  fontFamily: 'var(--font-mono)',
+                  fontVariantNumeric: 'tabular-nums',
+                  color: 'var(--text-primary)',
+                  textAlign: 'right',
+                  width: '100%',
+                }}
+              />
+              <span style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 12px',
+                fontSize: 12,
+                fontWeight: 600,
+                color: 'var(--text-muted)',
+                background: 'rgba(255,255,255,0.03)',
+                borderLeft: '1px solid rgba(255,255,255,0.08)',
+              }}>
+                KB
+              </span>
+            </div>
+            <div style={{
+              marginTop: 6,
+              fontSize: 10,
+              color: 'var(--text-ghost)',
+              letterSpacing: '0.02em',
+            }}>
+              {t.optTargetSizeHint}
+            </div>
+          </>
+        )}
+      </div>
 
       {/* Selection */}
       {imageCount > 1 && (
@@ -233,6 +335,47 @@ export default function OptionsPanel({
       </div>
     </div>
   );
+}
+
+/* ── Mode pill (segmented switch) ── */
+function ModePill({ active, onClick, label, disabled, title }: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  disabled?: boolean;
+  title?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      style={{
+        padding: '5px 12px',
+        borderRadius: 6,
+        fontSize: 11,
+        fontWeight: 600,
+        border: 'none',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        background: active ? 'rgba(255,255,255,0.1)' : 'transparent',
+        color: disabled
+          ? 'var(--text-ghost)'
+          : active ? 'var(--text-primary)' : 'var(--text-muted)',
+        opacity: disabled ? 0.5 : 1,
+        transition: 'all 0.15s ease',
+        boxShadow: active
+          ? '0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)'
+          : 'none',
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function formatTargetSize(kb: number): string {
+  if (kb >= 1024) return `${(kb / 1024).toFixed(1)} MB`;
+  return `${kb} KB`;
 }
 
 /* ── Section wrapper ── */
