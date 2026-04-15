@@ -104,6 +104,10 @@ export interface Messages {
   pwaInstallButton: string;
   pwaInstallDismiss: string;
   pwaFooterLink: string;
+
+  // Advanced options
+  optAdvanced: string;
+  optFormatExperimental: string;
 }
 
 const ko: Messages = {
@@ -177,6 +181,8 @@ const ko: Messages = {
   pwaInstallButton: '설치',
   pwaInstallDismiss: '나중에',
   pwaFooterLink: '앱으로 설치',
+  optAdvanced: '고급 옵션',
+  optFormatExperimental: '실험적',
 };
 
 const en: Messages = {
@@ -250,6 +256,8 @@ const en: Messages = {
   pwaInstallButton: 'Install',
   pwaInstallDismiss: 'Later',
   pwaFooterLink: 'Install app',
+  optAdvanced: 'Advanced',
+  optFormatExperimental: 'experimental',
 };
 
 const ja: Messages = {
@@ -323,6 +331,8 @@ const ja: Messages = {
   pwaInstallButton: 'インストール',
   pwaInstallDismiss: '後で',
   pwaFooterLink: 'アプリインストール',
+  optAdvanced: '詳細設定',
+  optFormatExperimental: '実験的',
 };
 
 const zh: Messages = {
@@ -396,6 +406,8 @@ const zh: Messages = {
   pwaInstallButton: '安装',
   pwaInstallDismiss: '稍后',
   pwaFooterLink: '安装应用',
+  optAdvanced: '高级选项',
+  optFormatExperimental: '实验性',
 };
 
 const es: Messages = {
@@ -469,6 +481,8 @@ const es: Messages = {
   pwaInstallButton: 'Instalar',
   pwaInstallDismiss: 'Más tarde',
   pwaFooterLink: 'Instalar app',
+  optAdvanced: 'Avanzado',
+  optFormatExperimental: 'experimental',
 };
 
 const fr: Messages = {
@@ -542,6 +556,8 @@ const fr: Messages = {
   pwaInstallButton: 'Installer',
   pwaInstallDismiss: 'Plus tard',
   pwaFooterLink: "Installer l'app",
+  optAdvanced: 'Avancé',
+  optFormatExperimental: 'expérimental',
 };
 
 const de: Messages = {
@@ -615,6 +631,8 @@ const de: Messages = {
   pwaInstallButton: 'Installieren',
   pwaInstallDismiss: 'Später',
   pwaFooterLink: 'App installieren',
+  optAdvanced: 'Erweitert',
+  optFormatExperimental: 'experimentell',
 };
 
 const pt: Messages = {
@@ -688,6 +706,8 @@ const pt: Messages = {
   pwaInstallButton: 'Instalar',
   pwaInstallDismiss: 'Depois',
   pwaFooterLink: 'Instalar app',
+  optAdvanced: 'Avançado',
+  optFormatExperimental: 'experimental',
 };
 
 const vi: Messages = {
@@ -761,6 +781,8 @@ const vi: Messages = {
   pwaInstallButton: 'Cài đặt',
   pwaInstallDismiss: 'Để sau',
   pwaFooterLink: 'Cài đặt ứng dụng',
+  optAdvanced: 'Nâng cao',
+  optFormatExperimental: 'thử nghiệm',
 };
 
 const th: Messages = {
@@ -834,6 +856,8 @@ const th: Messages = {
   pwaInstallButton: 'ติดตั้ง',
   pwaInstallDismiss: 'ภายหลัง',
   pwaFooterLink: 'ติดตั้งแอป',
+  optAdvanced: 'ขั้นสูง',
+  optFormatExperimental: 'ทดลอง',
 };
 
 export const LOCALES: Record<Locale, { label: string; flag: string }> = {

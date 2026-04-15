@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import type { ProcessOptions } from '../utils/imageProcessor';
 import { useI18n } from '../i18n/useI18n';
 import { mimeShort, trackFormatSelected } from '../utils/analytics';
+import { supportsAvifEncoding } from '../utils/avifSupport';
 
 interface Props {
   options: ProcessOptions;
@@ -29,8 +31,24 @@ export default function OptionsPanel({
   selectedCount, onSelectAll, onDeselectAll,
 }: Props) {
   const { t } = useI18n();
+  const [avifSupported, setAvifSupported] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const set = <K extends keyof ProcessOptions>(k: K, v: ProcessOptions[K]) =>
     onChange({ ...options, [k]: v });
+
+  useEffect(() => {
+    let cancelled = false;
+    supportsAvifEncoding().then((ok) => {
+      if (!cancelled) setAvifSupported(ok);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Auto-expand advanced section when AVIF is the active format so it's
+  // visible (e.g., after restore from localStorage).
+  useEffect(() => {
+    if (options.format === 'image/avif') setAdvancedOpen(true);
+  }, [options.format]);
 
   const isLossy = options.format !== 'image/png';
 
@@ -113,6 +131,88 @@ export default function OptionsPanel({
             );
           })}
         </div>
+
+        {/* Advanced — collapsible, currently houses AVIF only.
+            Hidden entirely when the browser cannot encode AVIF. */}
+        {avifSupported && (
+          <div style={{ marginTop: 8 }}>
+            <button
+              onClick={() => setAdvancedOpen((v) => !v)}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '6px 2px',
+                color: 'var(--text-muted)',
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+              }}
+            >
+              <span>{t.optAdvanced}</span>
+              <svg
+                width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                style={{
+                  transform: advancedOpen ? 'rotate(180deg)' : 'rotate(0)',
+                  transition: 'transform 0.18s ease',
+                }}
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            {advancedOpen && (
+              <button
+                onClick={() => selectFormat('image/avif')}
+                style={{
+                  marginTop: 6,
+                  width: '100%',
+                  padding: '8px 10px',
+                  borderRadius: 7,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  letterSpacing: '-0.01em',
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: options.format === 'image/avif'
+                    ? 'rgba(255,255,255,0.1)'
+                    : 'rgba(255,255,255,0.03)',
+                  color: options.format === 'image/avif'
+                    ? 'var(--text-primary)'
+                    : 'var(--text-muted)',
+                  boxShadow: options.format === 'image/avif'
+                    ? '0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)'
+                    : 'none',
+                  transition: 'all 0.15s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                }}
+              >
+                <span>AVIF</span>
+                <span style={{
+                  fontSize: 9,
+                  fontWeight: 500,
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                  padding: '1px 6px',
+                  borderRadius: 4,
+                  color: 'var(--accent)',
+                  background: 'var(--accent-dim)',
+                  border: '1px solid var(--accent-border)',
+                }}>
+                  {t.optFormatExperimental}
+                </span>
+              </button>
+            )}
+          </div>
+        )}
       </Section>
 
       {/* Quality / Target size — segmented mode switch */}

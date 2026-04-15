@@ -1,8 +1,10 @@
 export type ProcessMode = 'quality' | 'target_size';
 
+export type OutputFormat = 'image/jpeg' | 'image/png' | 'image/webp' | 'image/avif';
+
 export interface ProcessOptions {
   quality: number; // 0.0 ~ 1.0, used when mode === 'quality'
-  format: 'image/jpeg' | 'image/png' | 'image/webp';
+  format: OutputFormat;
   mode: ProcessMode;
   targetSizeKB: number; // used when mode === 'target_size'
 }
@@ -26,6 +28,7 @@ const FORMAT_EXT: Record<string, string> = {
   'image/jpeg': '.jpg',
   'image/png': '.png',
   'image/webp': '.webp',
+  'image/avif': '.avif',
 };
 
 export function getOutputFilename(originalName: string, format: string): string {
