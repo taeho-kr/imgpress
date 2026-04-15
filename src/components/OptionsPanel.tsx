@@ -1,5 +1,6 @@
 import type { ProcessOptions } from '../utils/imageProcessor';
 import { useI18n } from '../i18n/useI18n';
+import { mimeShort, trackFormatSelected } from '../utils/analytics';
 
 interface Props {
   options: ProcessOptions;
@@ -31,6 +32,11 @@ export default function OptionsPanel({
   const set = <K extends keyof ProcessOptions>(k: K, v: ProcessOptions[K]) =>
     onChange({ ...options, [k]: v });
 
+  const selectFormat = (value: ProcessOptions['format']) => {
+    set('format', value);
+    trackFormatSelected({ format: mimeShort(value), source: 'user' });
+  };
+
   const qualityPct = Math.round(options.quality * 100);
   const trackFill = `${((options.quality - 0.1) / 0.9) * 100}%`;
 
@@ -61,7 +67,7 @@ export default function OptionsPanel({
             return (
               <button
                 key={value}
-                onClick={() => set('format', value)}
+                onClick={() => selectFormat(value)}
                 style={{
                   padding: '8px 4px',
                   borderRadius: 7,

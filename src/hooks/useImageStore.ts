@@ -5,6 +5,16 @@ import {
   processImage,
   generateThumbnail,
 } from '../utils/imageProcessor';
+import {
+  countBucket,
+  extOnly,
+  mimeShort,
+  ratioBucket,
+  sizeBucket,
+  trackCompressComplete,
+  trackCompressError,
+  trackFileUpload,
+} from '../utils/analytics';
 
 let nextId = 0;
 
@@ -13,8 +23,22 @@ export function useImageStore() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
-  const addFiles = useCallback((files: FileList | File[]) => {
+  const addFiles = useCallback((files: FileList | File[], source: 'drop' | 'paste' | 'click' | 'folder' = 'drop') => {
     const accepted = Array.from(files).filter((f) => f.type.startsWith('image/'));
+
+    // Track uploads, one event per file (carries extension).
+    // Count bucket reflects the batch as a whole.
+    if (accepted.length > 0) {
+      const batchBucket = countBucket(accepted.length);
+      accepted.forEach((f) => {
+        trackFileUpload({
+          extension: extOnly(f.name),
+          count_bucket: batchBucket,
+          source,
+        });
+      });
+    }
+
     const newImages: ProcessedImage[] = accepted.map((file) => ({
       id: `img-${nextId++}`,
       originalFile: file,
@@ -74,6 +98,16 @@ export function useImageStore() {
         try {
           const result = await processImage(item.originalFile, options);
           const processedUrl = URL.createObjectURL(result.blob);
+          const sizeBefore = item.originalFile.size;
+          const sizeAfter = result.blob.size;
+          const pct = Math.round((1 - sizeAfter / sizeBefore) * 100);
+          trackCompressComplete({
+            format: mimeShort(options.format),
+            mode: 'quality',
+            size_before_bucket: sizeBucket(sizeBefore),
+            size_after_bucket: sizeBucket(sizeAfter),
+            ratio_bucket: ratioBucket(pct),
+          });
           setImages((curr) =>
             curr.map((p) =>
               p.id === item.id
@@ -89,6 +123,7 @@ export function useImageStore() {
             ),
           );
         } catch (err) {
+          trackCompressError({ stage: 'encode', reason: String(err).slice(0, 80) });
           setImages((curr) =>
             curr.map((p) =>
               p.id === item.id
@@ -119,6 +154,16 @@ export function useImageStore() {
     try {
       const result = await processImage(targetItem.originalFile, options);
       const processedUrl = URL.createObjectURL(result.blob);
+      const sizeBefore = targetItem.originalFile.size;
+      const sizeAfter = result.blob.size;
+      const pct = Math.round((1 - sizeAfter / sizeBefore) * 100);
+      trackCompressComplete({
+        format: mimeShort(options.format),
+        mode: 'quality',
+        size_before_bucket: sizeBucket(sizeBefore),
+        size_after_bucket: sizeBucket(sizeAfter),
+        ratio_bucket: ratioBucket(pct),
+      });
       setImages((curr) =>
         curr.map((p) =>
           p.id === id
@@ -127,6 +172,7 @@ export function useImageStore() {
         ),
       );
     } catch (err) {
+      trackCompressError({ stage: 'encode', reason: String(err).slice(0, 80) });
       setImages((curr) =>
         curr.map((p) =>
           p.id === id ? { ...p, status: 'error' as const, error: String(err) } : p,

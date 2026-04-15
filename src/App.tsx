@@ -58,7 +58,7 @@ export default function App() {
       }
       if (files.length > 0) {
         e.preventDefault();
-        addFiles(files);
+        addFiles(files, 'paste');
       }
     };
     document.addEventListener('paste', handlePaste);

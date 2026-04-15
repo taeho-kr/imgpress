@@ -2,7 +2,7 @@ import { useCallback, useRef, useState, type DragEvent } from 'react';
 import { useI18n } from '../i18n/useI18n';
 
 interface Props {
-  onFiles: (files: FileList) => void;
+  onFiles: (files: FileList, source?: 'drop' | 'paste' | 'click' | 'folder') => void;
   hasFiles: boolean;
 }
 
@@ -20,7 +20,7 @@ export default function DropZone({ onFiles, hasFiles }: Props) {
     (e: DragEvent) => {
       stop(e);
       setOver(false);
-      if (e.dataTransfer.files.length) onFiles(e.dataTransfer.files);
+      if (e.dataTransfer.files.length) onFiles(e.dataTransfer.files, 'drop');
     },
     [stop, onFiles],
   );
@@ -55,7 +55,7 @@ export default function DropZone({ onFiles, hasFiles }: Props) {
         multiple
         style={{ display: 'none' }}
         onChange={(e) => {
-          if (e.target.files) onFiles(e.target.files);
+          if (e.target.files) onFiles(e.target.files, 'click');
           e.target.value = '';
         }}
       />
