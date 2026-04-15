@@ -61,7 +61,6 @@ export interface Messages {
   // Compare modal
   compareOriginal: string;
   compareCompressed: string;
-  compareClickToToggle: string;
   compareSaved: string;
   compareReduction: string;
   compareClose: string;
@@ -129,7 +128,6 @@ const ko: Messages = {
   summarySaved: '절약',
   compareOriginal: '원본',
   compareCompressed: '변환',
-  compareClickToToggle: '클릭하여 전환',
   compareSaved: '절약',
   compareReduction: '감소',
   compareClose: '닫기',
@@ -189,7 +187,6 @@ const en: Messages = {
   summarySaved: 'saved',
   compareOriginal: 'Original',
   compareCompressed: 'Compressed',
-  compareClickToToggle: 'Click to toggle',
   compareSaved: 'Saved',
   compareReduction: 'reduction',
   compareClose: 'Close',
@@ -249,7 +246,6 @@ const ja: Messages = {
   summarySaved: '節約',
   compareOriginal: '元画像',
   compareCompressed: '変換後',
-  compareClickToToggle: 'クリックで切替',
   compareSaved: '節約',
   compareReduction: '削減',
   compareClose: '閉じる',
@@ -309,7 +305,6 @@ const zh: Messages = {
   summarySaved: '节省',
   compareOriginal: '原图',
   compareCompressed: '压缩后',
-  compareClickToToggle: '点击切换',
   compareSaved: '节省',
   compareReduction: '减少',
   compareClose: '关闭',
@@ -369,7 +364,6 @@ const es: Messages = {
   summarySaved: 'ahorrado',
   compareOriginal: 'Original',
   compareCompressed: 'Comprimido',
-  compareClickToToggle: 'Clic para alternar',
   compareSaved: 'Ahorrado',
   compareReduction: 'reducción',
   compareClose: 'Cerrar',
@@ -429,7 +423,6 @@ const fr: Messages = {
   summarySaved: 'économisé',
   compareOriginal: 'Original',
   compareCompressed: 'Compressé',
-  compareClickToToggle: 'Cliquez pour basculer',
   compareSaved: 'Économisé',
   compareReduction: 'réduction',
   compareClose: 'Fermer',
@@ -489,7 +482,6 @@ const de: Messages = {
   summarySaved: 'gespart',
   compareOriginal: 'Original',
   compareCompressed: 'Komprimiert',
-  compareClickToToggle: 'Klicken zum Umschalten',
   compareSaved: 'Gespart',
   compareReduction: 'Reduktion',
   compareClose: 'Schließen',
@@ -549,7 +541,6 @@ const pt: Messages = {
   summarySaved: 'economizado',
   compareOriginal: 'Original',
   compareCompressed: 'Comprimido',
-  compareClickToToggle: 'Clique para alternar',
   compareSaved: 'Economizado',
   compareReduction: 'redução',
   compareClose: 'Fechar',
@@ -609,7 +600,6 @@ const vi: Messages = {
   summarySaved: 'tiết kiệm',
   compareOriginal: 'Gốc',
   compareCompressed: 'Đã nén',
-  compareClickToToggle: 'Nhấp để chuyển đổi',
   compareSaved: 'Tiết kiệm',
   compareReduction: 'giảm',
   compareClose: 'Đóng',
@@ -669,7 +659,6 @@ const th: Messages = {
   summarySaved: 'ประหยัด',
   compareOriginal: 'ต้นฉบับ',
   compareCompressed: 'บีบอัดแล้ว',
-  compareClickToToggle: 'คลิกเพื่อสลับ',
   compareSaved: 'ประหยัด',
   compareReduction: 'ลดลง',
   compareClose: 'ปิด',
