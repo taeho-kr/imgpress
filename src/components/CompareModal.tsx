@@ -26,6 +26,8 @@ export default function CompareModal({
   const [showOriginal, setShowOriginal] = useState(false);
   const ratio = compressionRatio(originalSize, processedSize);
 
+  const toggle = (next: boolean) => setShowOriginal(next);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -33,6 +35,13 @@ export default function CompareModal({
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
+
+  // Lock body scroll while modal is open
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, []);
 
   return (
     <div
@@ -48,8 +57,12 @@ export default function CompareModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={fileName}
         className="glass-2"
         style={{
+          background: 'var(--bg-surface)',
           borderRadius: 'var(--r-2xl)',
           width: '100%',
           maxWidth: 900,
@@ -103,26 +116,41 @@ export default function CompareModal({
 
         {/* Image area */}
         <div
-          onClick={() => setShowOriginal(!showOriginal)}
+          onClick={() => toggle(!showOriginal)}
           style={{
             position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            flex: '1 1 auto',
+            minHeight: 0,
             overflow: 'hidden',
             cursor: 'pointer',
-            padding: 16,
             background: 'rgba(0,0,0,0.3)',
           }}
         >
+          {/* Stacked images — crossfade avoids flash + layout shift on toggle */}
           <img
-            src={showOriginal ? originalUrl : processedUrl}
-            alt={showOriginal ? t.compareOriginal : t.compareCompressed}
+            src={processedUrl}
+            alt={t.compareCompressed}
             style={{
-              display: 'block',
-              maxWidth: '100%',
-              maxHeight: 'calc(90vh - 180px)',
+              position: 'absolute',
+              inset: 16,
+              width: 'calc(100% - 32px)',
+              height: 'calc(100% - 32px)',
               objectFit: 'contain',
+              transition: 'opacity 0.22s ease',
+              opacity: showOriginal ? 0 : 1,
+            }}
+          />
+          <img
+            src={originalUrl}
+            alt={t.compareOriginal}
+            style={{
+              position: 'absolute',
+              inset: 16,
+              width: 'calc(100% - 32px)',
+              height: 'calc(100% - 32px)',
+              objectFit: 'contain',
+              transition: 'opacity 0.22s ease',
+              opacity: showOriginal ? 1 : 0,
             }}
           />
 
@@ -135,20 +163,8 @@ export default function CompareModal({
             backdropFilter: 'blur(8px)',
             border: '1px solid rgba(255,255,255,0.1)',
           }}>
-            <TogglePill active={showOriginal} onClick={() => setShowOriginal(true)} label={t.compareOriginal} />
-            <TogglePill active={!showOriginal} onClick={() => setShowOriginal(false)} label={t.compareCompressed} accent />
-          </div>
-
-          {/* Hint */}
-          <div style={{
-            position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)',
-            padding: '5px 14px', borderRadius: 100,
-            background: 'rgba(8,11,18,0.7)',
-            backdropFilter: 'blur(6px)',
-            fontSize: 12, color: 'var(--text-muted)',
-            pointerEvents: 'none',
-          }}>
-            {t.compareClickToToggle}
+            <TogglePill active={showOriginal} onClick={() => toggle(true)} label={t.compareOriginal} />
+            <TogglePill active={!showOriginal} onClick={() => toggle(false)} label={t.compareCompressed} accent />
           </div>
         </div>
 
