@@ -5,7 +5,6 @@ import ImageCard from './components/ImageCard';
 import CompareModal from './components/CompareModal';
 import PrivacyModal from './components/PrivacyModal';
 import LocaleSwitcher from './components/LocaleSwitcher';
-import CompressionShowcase from './components/CompressionShowcase';
 import { useI18n } from './i18n/useI18n';
 import { useImageStore } from './hooks/useImageStore';
 import {
@@ -38,6 +37,7 @@ export default function App() {
     toggleSelect, selectAll, deselectAll,
   } = useImageStore();
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [sampleCompareOpen, setSampleCompareOpen] = useState(false);
 
   // Persist options to localStorage
   useEffect(() => {
@@ -211,6 +211,9 @@ export default function App() {
             </div>
           )}
 
+          {/* Sample */}
+          {!hasImages && <SamplePreview title={t.sampleTitle} originalLabel={t.cardOriginal} compressedLabel={t.cardCompressed} onOpen={() => setSampleCompareOpen(true)} />}
+
           {/* Workspace header */}
           {hasImages && (
             <div className="anim-fade-up" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
@@ -255,19 +258,8 @@ export default function App() {
             </div>
           )}
 
-          {/* Showcase — between Hero and DropZone */}
-          {!hasImages && (
-            <div className="anim-fade-up anim-delay-3" style={{ marginBottom: 48 }}>
-              <CompressionShowcase
-                onScrollToDropZone={() =>
-                  document.getElementById('dropzone')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-                }
-              />
-            </div>
-          )}
-
           {/* Drop zone */}
-          <div id="dropzone" className={hasImages ? '' : 'anim-fade-up anim-delay-4'}>
+          <div className={hasImages ? '' : 'anim-fade-up anim-delay-3'}>
             <DropZone onFiles={addFiles} hasFiles={hasImages} />
           </div>
 
@@ -353,6 +345,21 @@ export default function App() {
       {/* Compare modal */}
       {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}
 
+      {sampleCompareOpen && (
+        <CompareModal
+          originalUrl="/demo/carina-preview-original.jpg"
+          processedUrl="/demo/carina-preview-compressed.webp"
+          originalSize={SAMPLE_ORIGINAL_BYTES}
+          processedSize={SAMPLE_COMPRESSED_BYTES}
+          originalWidth={14575}
+          originalHeight={8441}
+          processedWidth={14575}
+          processedHeight={8441}
+          fileName="Cosmic Cliffs — JWST (ESA/Webb)"
+          onClose={() => setSampleCompareOpen(false)}
+        />
+      )}
+
       {compareImg && compareImg.processedUrl && compareImg.processedBlob && (
         <CompareModal
           originalUrl={compareImg.originalUrl}
@@ -368,6 +375,69 @@ export default function App() {
         />
       )}
     </>
+  );
+}
+
+const SAMPLE_ORIGINAL_BYTES = 17843041;
+const SAMPLE_COMPRESSED_BYTES = 2995428;
+
+function SamplePreview({ title, originalLabel, compressedLabel, onOpen }: { title: string; originalLabel: string; compressedLabel: string; onOpen: () => void }) {
+  const ratio = compressionRatio(SAMPLE_ORIGINAL_BYTES, SAMPLE_COMPRESSED_BYTES);
+  return (
+    <div className="anim-fade-up anim-delay-4" style={{ maxWidth: 880, margin: '0 auto 48px' }}>
+      <h2 style={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-primary)', marginBottom: 18, textAlign: 'center' }}>
+        {title}
+      </h2>
+      <div className="sample-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 16 }}>
+        <SampleCard
+          src="/demo/carina-preview-original.jpg"
+          label={originalLabel}
+          format="JPEG"
+          size={SAMPLE_ORIGINAL_BYTES}
+          onClick={onOpen}
+        />
+        <SampleCard
+          src="/demo/carina-preview-compressed.webp"
+          label={compressedLabel}
+          format="WebP"
+          size={SAMPLE_COMPRESSED_BYTES}
+          accent
+          badge={`-${ratio}%`}
+          onClick={onOpen}
+        />
+      </div>
+      <p style={{ marginTop: 12, textAlign: 'center', fontSize: 11, color: 'var(--text-ghost)', letterSpacing: '-0.005em' }}>
+        Image: “Cosmic Cliffs” in the Carina Nebula · <a href="https://esawebb.org/images/weic2205a/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline', textUnderlineOffset: 2 }}>NASA, ESA, CSA, STScI</a>
+      </p>
+    </div>
+  );
+}
+
+function SampleCard({ src, label, format, size, accent, badge, onClick }: { src: string; label: string; format: string; size: number; accent?: boolean; badge?: string; onClick?: () => void }) {
+  return (
+    <div
+      className="glass-1"
+      onClick={onClick}
+      style={{ borderRadius: 'var(--r-xl)', overflow: 'hidden', border: `1px solid ${accent ? 'rgba(232,160,48,0.35)' : 'var(--glass-1-border)'}`, background: 'var(--glass-1-bg)', display: 'flex', flexDirection: 'column', cursor: onClick ? 'zoom-in' : 'default', transition: 'border-color 0.2s ease, transform 0.22s cubic-bezier(0.25,0.46,0.45,0.94)' }}
+      onMouseEnter={(e) => { if (!onClick) return; const el = e.currentTarget; el.style.transform = 'translateY(-3px)'; el.style.borderColor = accent ? 'rgba(232,160,48,0.55)' : 'rgba(255,255,255,0.15)'; }}
+      onMouseLeave={(e) => { if (!onClick) return; const el = e.currentTarget; el.style.transform = 'translateY(0)'; el.style.borderColor = accent ? 'rgba(232,160,48,0.35)' : 'var(--glass-1-border)'; }}
+    >
+      <div style={{ position: 'relative', aspectRatio: '3/2', background: '#000' }}>
+        <img src={src} alt={label} style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
+        {badge && (
+          <div style={{ position: 'absolute', top: 10, right: 10, padding: '4px 10px', borderRadius: 100, background: 'var(--accent)', color: '#080b12', fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700, letterSpacing: '-0.01em' }}>
+            {badge}
+          </div>
+        )}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: accent ? 'var(--accent)' : 'var(--text-secondary)', letterSpacing: '-0.01em' }}>{label}</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{format}</span>
+        </div>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' }}>{formatBytes(size)}</span>
+      </div>
+    </div>
   );
 }
 
