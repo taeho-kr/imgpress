@@ -1,8 +1,10 @@
 import { useCallback, useRef, useState, type DragEvent } from 'react';
 import { useI18n } from '../i18n/useI18n';
+import { collectFilesFromDataTransfer, hasDirectoryEntry } from '../utils/folderDrop';
+import { countBucket, trackFolderDrop } from '../utils/analytics';
 
 interface Props {
-  onFiles: (files: FileList, source?: 'drop' | 'paste' | 'click' | 'folder') => void;
+  onFiles: (files: FileList | File[], source?: 'drop' | 'paste' | 'click' | 'folder') => void;
   hasFiles: boolean;
 }
 
@@ -17,10 +19,21 @@ export default function DropZone({ onFiles, hasFiles }: Props) {
   }, []);
 
   const handleDrop = useCallback(
-    (e: DragEvent) => {
+    async (e: DragEvent) => {
       stop(e);
       setOver(false);
-      if (e.dataTransfer.files.length) onFiles(e.dataTransfer.files, 'drop');
+      const dt = e.dataTransfer;
+      // If a folder is among the dropped items, walk it. Otherwise fall back
+      // to the regular files list to avoid the async path's overhead.
+      if (hasDirectoryEntry(dt.items)) {
+        const files = await collectFilesFromDataTransfer(dt);
+        if (files.length) {
+          trackFolderDrop({ count_bucket: countBucket(files.length) });
+          onFiles(files, 'folder');
+        }
+      } else if (dt.files.length) {
+        onFiles(dt.files, 'drop');
+      }
     },
     [stop, onFiles],
   );
