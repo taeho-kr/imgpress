@@ -60,9 +60,15 @@ export default function CompareModal({
         role="dialog"
         aria-modal="true"
         aria-label={fileName}
-        className="glass-2"
         style={{
-          background: 'var(--bg-surface)',
+          // Hardcoded opaque color (not var()) so the modal stays solid
+          // regardless of CSS variable resolution timing or class ordering.
+          // Glass effect intentionally dropped — a transparent modal over a
+          // page that already has visual depth becomes hard to read.
+          backgroundColor: '#101520',
+          border: '1px solid rgba(255, 255, 255, 0.13)',
+          boxShadow:
+            '0 1px 0 0 rgba(255,255,255,0.07) inset, 0 0 0 1px rgba(0,0,0,0.4), 0 20px 60px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.2)',
           borderRadius: 'var(--r-2xl)',
           width: '100%',
           maxWidth: 900,
