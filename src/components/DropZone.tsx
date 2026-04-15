@@ -51,7 +51,7 @@ export default function DropZone({ onFiles, hasFiles }: Props) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,.heic,.heif"
         multiple
         style={{ display: 'none' }}
         onChange={(e) => {

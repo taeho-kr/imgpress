@@ -6,6 +6,7 @@ import CompareModal from './components/CompareModal';
 import PrivacyModal from './components/PrivacyModal';
 import LocaleSwitcher from './components/LocaleSwitcher';
 import CompressionShowcase from './components/CompressionShowcase';
+import ToastHost from './components/Toast';
 import { useI18n } from './i18n/useI18n';
 import { useImageStore } from './hooks/useImageStore';
 import {
@@ -349,6 +350,9 @@ export default function App() {
           </div>
         </footer>
       </div>
+
+      {/* Toast host — fires from anywhere via showToast() */}
+      <ToastHost />
 
       {/* Compare modal */}
       {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}

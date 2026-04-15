@@ -14,7 +14,11 @@ import {
   trackCompressComplete,
   trackCompressError,
   trackFileUpload,
+  trackHeicDetected,
 } from '../utils/analytics';
+import { decodeHeic, isHeicFile } from '../utils/heicDecoder';
+import { showToast } from '../components/Toast';
+import { getI18nMessages } from '../i18n/useI18n';
 
 let nextId = 0;
 
@@ -24,10 +28,13 @@ export function useImageStore() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const addFiles = useCallback((files: FileList | File[], source: 'drop' | 'paste' | 'click' | 'folder' = 'drop') => {
-    const accepted = Array.from(files).filter((f) => f.type.startsWith('image/'));
+    // HEIC files may arrive with empty mime type on some platforms, so accept
+    // them by extension in addition to the usual image/* mime filter.
+    const accepted = Array.from(files).filter(
+      (f) => f.type.startsWith('image/') || isHeicFile(f),
+    );
 
-    // Track uploads, one event per file (carries extension).
-    // Count bucket reflects the batch as a whole.
+    // Track uploads (one event per file, carries extension) + HEIC detection.
     if (accepted.length > 0) {
       const batchBucket = countBucket(accepted.length);
       accepted.forEach((f) => {
@@ -37,12 +44,18 @@ export function useImageStore() {
           source,
         });
       });
+      const heicCount = accepted.filter(isHeicFile).length;
+      if (heicCount > 0) {
+        trackHeicDetected({ count_bucket: countBucket(heicCount) });
+        const t = getI18nMessages();
+        showToast({ message: t.heicConverting, kind: 'info', duration: 3200 });
+      }
     }
 
     const newImages: ProcessedImage[] = accepted.map((file) => ({
       id: `img-${nextId++}`,
       originalFile: file,
-      originalUrl: URL.createObjectURL(file),
+      originalUrl: isHeicFile(file) ? '' : URL.createObjectURL(file),
       thumbnailUrl: null,
       originalWidth: 0,
       originalHeight: 0,
@@ -53,17 +66,53 @@ export function useImageStore() {
       status: 'pending' as const,
     }));
 
-    // Generate thumbnails and get dimensions asynchronously
+    // Decode HEIC in background, then replace the File with a JPEG-encoded
+    // File so the rest of the pipeline is HEIC-agnostic.
     newImages.forEach((item) => {
-      generateThumbnail(item.originalFile).then(({ url, width, height }) => {
-        setImages((prev) =>
-          prev.map((p) =>
-            p.id === item.id
-              ? { ...p, thumbnailUrl: url, originalWidth: width, originalHeight: height }
-              : p,
-          ),
-        );
-      });
+      if (isHeicFile(item.originalFile)) {
+        decodeHeic(item.originalFile)
+          .then((jpegFile) => {
+            const newUrl = URL.createObjectURL(jpegFile);
+            setImages((prev) =>
+              prev.map((p) =>
+                p.id === item.id
+                  ? { ...p, originalFile: jpegFile, originalUrl: newUrl }
+                  : p,
+              ),
+            );
+            generateThumbnail(jpegFile).then(({ url, width, height }) => {
+              setImages((prev) =>
+                prev.map((p) =>
+                  p.id === item.id
+                    ? { ...p, thumbnailUrl: url, originalWidth: width, originalHeight: height }
+                    : p,
+                ),
+              );
+            });
+          })
+          .catch((err) => {
+            trackCompressError({ stage: 'decode', reason: String(err).slice(0, 80) });
+            const t = getI18nMessages();
+            showToast({ message: t.heicFailed, kind: 'error' });
+            setImages((prev) =>
+              prev.map((p) =>
+                p.id === item.id
+                  ? { ...p, status: 'error' as const, error: String(err) }
+                  : p,
+              ),
+            );
+          });
+      } else {
+        generateThumbnail(item.originalFile).then(({ url, width, height }) => {
+          setImages((prev) =>
+            prev.map((p) =>
+              p.id === item.id
+                ? { ...p, thumbnailUrl: url, originalWidth: width, originalHeight: height }
+                : p,
+            ),
+          );
+        });
+      }
     });
 
     setImages((prev) => [...prev, ...newImages]);

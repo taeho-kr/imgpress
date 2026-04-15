@@ -84,6 +84,11 @@ export interface Messages {
   showcaseCard1: string;
   showcaseCard2: string;
   showcaseCard3: string;
+
+  // HEIC
+  heicDetected: string;
+  heicConverting: string;
+  heicFailed: string;
 }
 
 const ko: Messages = {
@@ -98,7 +103,7 @@ const ko: Messages = {
   dropTitle: '이미지를 드래그하거나 클릭',
   dropTitleHover: '여기에 놓으세요',
   dropAddMore: '이미지 추가',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: '브라우저에서만 처리 · 서버 전송 없음',
   featurePrivacyTitle: '완전한 프라이버시',
   featurePrivacyDesc: '이미지가 기기를 벗어나지 않습니다. 서버 업로드 없음.',
@@ -143,6 +148,9 @@ const ko: Messages = {
   showcaseCard1: '풍경 사진',
   showcaseCard2: 'UI 스크린샷',
   showcaseCard3: '벡터 그래픽',
+  heicDetected: 'HEIC 파일 감지',
+  heicConverting: 'iPhone 사진 변환 중...',
+  heicFailed: 'HEIC 변환 실패',
 };
 
 const en: Messages = {
@@ -157,7 +165,7 @@ const en: Messages = {
   dropTitle: 'Drag images here or click',
   dropTitleHover: 'Drop here!',
   dropAddMore: 'Add more',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: 'Processed in browser · No server upload',
   featurePrivacyTitle: 'Full Privacy',
   featurePrivacyDesc: 'Images never leave your device. No server upload.',
@@ -202,6 +210,9 @@ const en: Messages = {
   showcaseCard1: 'Landscape',
   showcaseCard2: 'UI Screenshot',
   showcaseCard3: 'Vector',
+  heicDetected: 'HEIC file detected',
+  heicConverting: 'Converting iPhone photos...',
+  heicFailed: 'HEIC conversion failed',
 };
 
 const ja: Messages = {
@@ -216,7 +227,7 @@ const ja: Messages = {
   dropTitle: '画像をドラッグまたはクリック',
   dropTitleHover: 'ここにドロップ！',
   dropAddMore: '画像を追加',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: 'ブラウザ内で処理 · サーバー送信なし',
   featurePrivacyTitle: '完全なプライバシー',
   featurePrivacyDesc: '画像はデバイスから離れません。サーバーアップロードなし。',
@@ -261,6 +272,9 @@ const ja: Messages = {
   showcaseCard1: '風景写真',
   showcaseCard2: 'UIスクリーンショット',
   showcaseCard3: 'ベクターグラフィック',
+  heicDetected: 'HEICファイルを検出',
+  heicConverting: 'iPhone写真を変換中...',
+  heicFailed: 'HEIC変換に失敗',
 };
 
 const zh: Messages = {
@@ -275,7 +289,7 @@ const zh: Messages = {
   dropTitle: '拖拽图片到此处或点击',
   dropTitleHover: '放在这里！',
   dropAddMore: '添加更多',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: '浏览器内处理 · 无服务器上传',
   featurePrivacyTitle: '完全隐私',
   featurePrivacyDesc: '图片不会离开您的设备。无服务器上传。',
@@ -320,6 +334,9 @@ const zh: Messages = {
   showcaseCard1: '风景照片',
   showcaseCard2: 'UI截图',
   showcaseCard3: '矢量图形',
+  heicDetected: '检测到 HEIC 文件',
+  heicConverting: '正在转换 iPhone 照片...',
+  heicFailed: 'HEIC 转换失败',
 };
 
 const es: Messages = {
@@ -334,7 +351,7 @@ const es: Messages = {
   dropTitle: 'Arrastra imágenes aquí o haz clic',
   dropTitleHover: '¡Suelta aquí!',
   dropAddMore: 'Agregar más',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: 'Procesado en el navegador · Sin subida',
   featurePrivacyTitle: 'Privacidad total',
   featurePrivacyDesc: 'Las imágenes nunca salen de tu dispositivo.',
@@ -379,6 +396,9 @@ const es: Messages = {
   showcaseCard1: 'Paisaje',
   showcaseCard2: 'Captura de UI',
   showcaseCard3: 'Gráfico vectorial',
+  heicDetected: 'Archivo HEIC detectado',
+  heicConverting: 'Convirtiendo fotos de iPhone...',
+  heicFailed: 'Conversión HEIC fallida',
 };
 
 const fr: Messages = {
@@ -393,7 +413,7 @@ const fr: Messages = {
   dropTitle: 'Glissez des images ici ou cliquez',
   dropTitleHover: 'Déposez ici !',
   dropAddMore: 'Ajouter',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: 'Traitement dans le navigateur · Aucun envoi',
   featurePrivacyTitle: 'Confidentialité totale',
   featurePrivacyDesc: 'Les images ne quittent jamais votre appareil.',
@@ -438,6 +458,9 @@ const fr: Messages = {
   showcaseCard1: 'Paysage',
   showcaseCard2: "Capture d'interface",
   showcaseCard3: 'Graphique vectoriel',
+  heicDetected: 'Fichier HEIC détecté',
+  heicConverting: 'Conversion des photos iPhone...',
+  heicFailed: 'Échec de conversion HEIC',
 };
 
 const de: Messages = {
@@ -452,7 +475,7 @@ const de: Messages = {
   dropTitle: 'Bilder hierher ziehen oder klicken',
   dropTitleHover: 'Hier ablegen!',
   dropAddMore: 'Mehr hinzufügen',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: 'Verarbeitung im Browser · Kein Upload',
   featurePrivacyTitle: 'Volle Privatsphäre',
   featurePrivacyDesc: 'Bilder verlassen niemals Ihr Gerät.',
@@ -497,6 +520,9 @@ const de: Messages = {
   showcaseCard1: 'Landschaft',
   showcaseCard2: 'UI-Screenshot',
   showcaseCard3: 'Vektorgrafik',
+  heicDetected: 'HEIC-Datei erkannt',
+  heicConverting: 'iPhone-Fotos werden konvertiert...',
+  heicFailed: 'HEIC-Konvertierung fehlgeschlagen',
 };
 
 const pt: Messages = {
@@ -511,7 +537,7 @@ const pt: Messages = {
   dropTitle: 'Arraste imagens aqui ou clique',
   dropTitleHover: 'Solte aqui!',
   dropAddMore: 'Adicionar mais',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: 'Processado no navegador · Sem envio',
   featurePrivacyTitle: 'Privacidade total',
   featurePrivacyDesc: 'As imagens nunca saem do seu dispositivo.',
@@ -556,6 +582,9 @@ const pt: Messages = {
   showcaseCard1: 'Paisagem',
   showcaseCard2: 'Captura de tela',
   showcaseCard3: 'Gráfico vetorial',
+  heicDetected: 'Arquivo HEIC detectado',
+  heicConverting: 'Convertendo fotos do iPhone...',
+  heicFailed: 'Falha na conversão HEIC',
 };
 
 const vi: Messages = {
@@ -570,7 +599,7 @@ const vi: Messages = {
   dropTitle: 'Kéo ảnh vào đây hoặc nhấp',
   dropTitleHover: 'Thả vào đây!',
   dropAddMore: 'Thêm ảnh',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: 'Xử lý trong trình duyệt · Không tải lên',
   featurePrivacyTitle: 'Riêng tư hoàn toàn',
   featurePrivacyDesc: 'Ảnh không bao giờ rời khỏi thiết bị của bạn.',
@@ -615,6 +644,9 @@ const vi: Messages = {
   showcaseCard1: 'Phong cảnh',
   showcaseCard2: 'Ảnh giao diện',
   showcaseCard3: 'Đồ họa vector',
+  heicDetected: 'Đã phát hiện tệp HEIC',
+  heicConverting: 'Đang chuyển đổi ảnh iPhone...',
+  heicFailed: 'Chuyển đổi HEIC thất bại',
 };
 
 const th: Messages = {
@@ -629,7 +661,7 @@ const th: Messages = {
   dropTitle: 'ลากรูปภาพมาที่นี่หรือคลิก',
   dropTitleHover: 'วางที่นี่!',
   dropAddMore: 'เพิ่มอีก',
-  dropFormats: 'JPG · PNG · WebP · GIF · BMP · SVG',
+  dropFormats: 'JPG · PNG · WebP · HEIC · GIF · BMP · SVG',
   dropPrivacy: 'ประมวลผลในเบราว์เซอร์ · ไม่อัปโหลด',
   featurePrivacyTitle: 'ความเป็นส่วนตัวเต็มที่',
   featurePrivacyDesc: 'รูปภาพไม่ออกจากอุปกรณ์ของคุณ',
@@ -674,6 +706,9 @@ const th: Messages = {
   showcaseCard1: 'ภาพทิวทัศน์',
   showcaseCard2: 'ภาพหน้าจอ UI',
   showcaseCard3: 'กราฟิกเวกเตอร์',
+  heicDetected: 'ตรวจพบไฟล์ HEIC',
+  heicConverting: 'กำลังแปลงรูปภาพ iPhone...',
+  heicFailed: 'การแปลง HEIC ล้มเหลว',
 };
 
 export const LOCALES: Record<Locale, { label: string; flag: string }> = {

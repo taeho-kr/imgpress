@@ -9,11 +9,22 @@ interface I18nContext {
 
 const Ctx = createContext<I18nContext>(null!);
 
+// Module-level snapshot for use outside React (e.g., event-driven toasts
+// fired from hooks that can't consume context during callbacks).
+let currentMessages: Messages = messages[detectLocale()];
+
+export function getI18nMessages(): Messages {
+  return currentMessages;
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
     const saved = localStorage.getItem('imgpress-locale') as Locale | null;
     return saved && messages[saved] ? saved : detectLocale();
   });
+
+  // Keep the module-level snapshot in sync with React state.
+  currentMessages = messages[locale];
 
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);
