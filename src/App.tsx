@@ -7,7 +7,9 @@ import PrivacyModal from './components/PrivacyModal';
 import LocaleSwitcher from './components/LocaleSwitcher';
 import CompressionShowcase from './components/CompressionShowcase';
 import ToastHost from './components/Toast';
+import PwaInstallBanner from './components/PwaInstallBanner';
 import { useI18n } from './i18n/useI18n';
+import { canInstall, promptInstall } from './utils/pwa';
 import { useImageStore } from './hooks/useImageStore';
 import {
   type ProcessOptions,
@@ -46,6 +48,17 @@ export default function App() {
     toggleSelect, selectAll, deselectAll,
   } = useImageStore();
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [hasDownloaded, setHasDownloaded] = useState(false);
+  const [installable, setInstallable] = useState(canInstall());
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ canInstall: boolean }>).detail;
+      setInstallable(detail.canInstall);
+    };
+    window.addEventListener('imgpress:pwa-installable', handler);
+    return () => window.removeEventListener('imgpress:pwa-installable', handler);
+  }, []);
 
   // Persist options to localStorage
   useEffect(() => {
@@ -92,6 +105,7 @@ export default function App() {
         download: getOutputFilename(img.originalFile.name, options.format),
       }).click();
       URL.revokeObjectURL(url);
+      setHasDownloaded(true);
       return;
     }
     // Multiple files: ZIP
@@ -108,6 +122,7 @@ export default function App() {
       download: 'imgpress-compressed.zip',
     }).click();
     URL.revokeObjectURL(url);
+    setHasDownloaded(true);
   }, [done, options.format]);
 
   const FEATURES = [
@@ -344,7 +359,17 @@ export default function App() {
           <div style={{ maxWidth: 1152, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>{t.footer}</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>Canvas API · No WASM · No Upload</span>
+              <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>Canvas API · No Upload</span>
+              {installable && (
+                <button
+                  onClick={() => promptInstall('footer')}
+                  style={{ fontSize: 11, color: 'var(--text-ghost)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, transition: 'color 0.15s ease' }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--text-ghost)'; }}
+                >
+                  {t.pwaFooterLink}
+                </button>
+              )}
               <button
                 onClick={() => setShowPrivacy(true)}
                 style={{ fontSize: 11, color: 'var(--text-ghost)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, transition: 'color 0.15s ease' }}
@@ -360,6 +385,9 @@ export default function App() {
 
       {/* Toast host — fires from anywhere via showToast() */}
       <ToastHost />
+
+      {/* PWA install banner — shows after first download, dismiss is sticky */}
+      <PwaInstallBanner triggerVisible={hasDownloaded} />
 
       {/* Compare modal */}
       {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}

@@ -97,6 +97,13 @@ export interface Messages {
   optTargetSizeHint: string;
   optTargetSizeMissed: string;
   optTargetSizeDisabledPng: string;
+
+  // PWA
+  pwaInstallTitle: string;
+  pwaInstallDesc: string;
+  pwaInstallButton: string;
+  pwaInstallDismiss: string;
+  pwaFooterLink: string;
 }
 
 const ko: Messages = {
@@ -165,6 +172,11 @@ const ko: Messages = {
   optTargetSizeHint: '결과 파일 크기',
   optTargetSizeMissed: '목표 용량 달성 실패 — 최대 압축 적용',
   optTargetSizeDisabledPng: 'PNG는 용량 모드를 지원하지 않습니다',
+  pwaInstallTitle: '앱으로 설치',
+  pwaInstallDesc: '오프라인에서도 작동합니다',
+  pwaInstallButton: '설치',
+  pwaInstallDismiss: '나중에',
+  pwaFooterLink: '앱으로 설치',
 };
 
 const en: Messages = {
@@ -233,6 +245,11 @@ const en: Messages = {
   optTargetSizeHint: 'Result file size',
   optTargetSizeMissed: 'Target size not met — max compression applied',
   optTargetSizeDisabledPng: 'PNG does not support target size mode',
+  pwaInstallTitle: 'Install as app',
+  pwaInstallDesc: 'Works offline',
+  pwaInstallButton: 'Install',
+  pwaInstallDismiss: 'Later',
+  pwaFooterLink: 'Install app',
 };
 
 const ja: Messages = {
@@ -301,6 +318,11 @@ const ja: Messages = {
   optTargetSizeHint: '結果ファイルサイズ',
   optTargetSizeMissed: '目標容量に達しません — 最大圧縮を適用',
   optTargetSizeDisabledPng: 'PNGは容量モードに対応しません',
+  pwaInstallTitle: 'アプリとしてインストール',
+  pwaInstallDesc: 'オフラインでも動作',
+  pwaInstallButton: 'インストール',
+  pwaInstallDismiss: '後で',
+  pwaFooterLink: 'アプリインストール',
 };
 
 const zh: Messages = {
@@ -369,6 +391,11 @@ const zh: Messages = {
   optTargetSizeHint: '结果文件大小',
   optTargetSizeMissed: '未达目标容量 — 已应用最大压缩',
   optTargetSizeDisabledPng: 'PNG 不支持容量模式',
+  pwaInstallTitle: '安装为应用',
+  pwaInstallDesc: '离线也可使用',
+  pwaInstallButton: '安装',
+  pwaInstallDismiss: '稍后',
+  pwaFooterLink: '安装应用',
 };
 
 const es: Messages = {
@@ -437,6 +464,11 @@ const es: Messages = {
   optTargetSizeHint: 'Tamaño del archivo final',
   optTargetSizeMissed: 'Tamaño objetivo no alcanzado — compresión máxima',
   optTargetSizeDisabledPng: 'PNG no admite modo de tamaño',
+  pwaInstallTitle: 'Instalar como app',
+  pwaInstallDesc: 'Funciona sin conexión',
+  pwaInstallButton: 'Instalar',
+  pwaInstallDismiss: 'Más tarde',
+  pwaFooterLink: 'Instalar app',
 };
 
 const fr: Messages = {
@@ -505,6 +537,11 @@ const fr: Messages = {
   optTargetSizeHint: 'Taille du fichier final',
   optTargetSizeMissed: 'Taille cible non atteinte — compression maximale',
   optTargetSizeDisabledPng: 'PNG ne gère pas le mode taille',
+  pwaInstallTitle: "Installer l'application",
+  pwaInstallDesc: 'Fonctionne hors ligne',
+  pwaInstallButton: 'Installer',
+  pwaInstallDismiss: 'Plus tard',
+  pwaFooterLink: "Installer l'app",
 };
 
 const de: Messages = {
@@ -573,6 +610,11 @@ const de: Messages = {
   optTargetSizeHint: 'Ergebnisdateigröße',
   optTargetSizeMissed: 'Zielgröße nicht erreicht — maximale Kompression',
   optTargetSizeDisabledPng: 'PNG unterstützt keinen Größenmodus',
+  pwaInstallTitle: 'Als App installieren',
+  pwaInstallDesc: 'Funktioniert offline',
+  pwaInstallButton: 'Installieren',
+  pwaInstallDismiss: 'Später',
+  pwaFooterLink: 'App installieren',
 };
 
 const pt: Messages = {
@@ -641,6 +683,11 @@ const pt: Messages = {
   optTargetSizeHint: 'Tamanho do arquivo final',
   optTargetSizeMissed: 'Tamanho alvo não atingido — compressão máxima',
   optTargetSizeDisabledPng: 'PNG não suporta modo de tamanho',
+  pwaInstallTitle: 'Instalar como app',
+  pwaInstallDesc: 'Funciona offline',
+  pwaInstallButton: 'Instalar',
+  pwaInstallDismiss: 'Depois',
+  pwaFooterLink: 'Instalar app',
 };
 
 const vi: Messages = {
@@ -709,6 +756,11 @@ const vi: Messages = {
   optTargetSizeHint: 'Kích thước tệp kết quả',
   optTargetSizeMissed: 'Không đạt kích thước — nén tối đa',
   optTargetSizeDisabledPng: 'PNG không hỗ trợ chế độ kích thước',
+  pwaInstallTitle: 'Cài đặt như ứng dụng',
+  pwaInstallDesc: 'Hoạt động ngoại tuyến',
+  pwaInstallButton: 'Cài đặt',
+  pwaInstallDismiss: 'Để sau',
+  pwaFooterLink: 'Cài đặt ứng dụng',
 };
 
 const th: Messages = {
@@ -777,6 +829,11 @@ const th: Messages = {
   optTargetSizeHint: 'ขนาดไฟล์ผลลัพธ์',
   optTargetSizeMissed: 'ไม่ถึงขนาดเป้าหมาย — ใช้การบีบอัดสูงสุด',
   optTargetSizeDisabledPng: 'PNG ไม่รองรับโหมดขนาด',
+  pwaInstallTitle: 'ติดตั้งเป็นแอป',
+  pwaInstallDesc: 'ใช้งานออฟไลน์ได้',
+  pwaInstallButton: 'ติดตั้ง',
+  pwaInstallDismiss: 'ภายหลัง',
+  pwaFooterLink: 'ติดตั้งแอป',
 };
 
 export const LOCALES: Record<Locale, { label: string; flag: string }> = {
