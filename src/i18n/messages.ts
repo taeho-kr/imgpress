@@ -81,6 +81,19 @@ export interface Messages {
 
   // Sample
   sampleTitle: string;
+
+  // Privacy guarantee badge
+  privacyZeroLabel: string;
+  privacyClaim: string;
+  privacySubClaim: string;
+
+  // Card actions
+  actRetry: string;
+
+  // ARIA labels
+  ariaDropZone: string;
+  ariaSelectImage: string;
+  ariaRemoveImage: string;
 }
 
 const ko: Messages = {
@@ -136,7 +149,15 @@ const ko: Messages = {
   actDownloadZip: 'ZIP 다운로드',
   selectAll: '전체 선택',
   deselectAll: '선택 해제',
-  sampleTitle: '압축 결과를 직접 확인하세요',};
+  sampleTitle: '압축 결과를 직접 확인하세요',
+  privacyZeroLabel: '사진 유출 가능성',
+  privacyClaim: '사진 파일이 이 기기를 벗어나지 않습니다',
+  privacySubClaim: '서버 전송 없음 · 브라우저에서만 처리 · 오프라인 작동',
+  actRetry: '재시도',
+  ariaDropZone: '이미지 파일을 드래그하거나 클릭해서 선택',
+  ariaSelectImage: '이미지 선택',
+  ariaRemoveImage: '이미지 삭제',
+};
 
 const en: Messages = {
   navTitle: 'ImgPress',
@@ -191,7 +212,15 @@ const en: Messages = {
   actDownloadZip: 'Download ZIP',
   selectAll: 'Select all',
   deselectAll: 'Deselect all',
-  sampleTitle: 'See the compression result yourself',};
+  sampleTitle: 'See the compression result yourself',
+  privacyZeroLabel: 'Leak probability',
+  privacyClaim: 'Your photos never leave this device',
+  privacySubClaim: 'No server upload · Browser-only processing · Works offline',
+  actRetry: 'Retry',
+  ariaDropZone: 'Drag image files or click to select',
+  ariaSelectImage: 'Select image',
+  ariaRemoveImage: 'Remove image',
+};
 
 const ja: Messages = {
   navTitle: 'ImgPress',
@@ -246,7 +275,15 @@ const ja: Messages = {
   actDownloadZip: 'ZIPダウンロード',
   selectAll: '全て選択',
   deselectAll: '選択解除',
-  sampleTitle: '圧縮結果を直接確認してください',};
+  sampleTitle: '圧縮結果を直接確認してください',
+  privacyZeroLabel: '写真流出の可能性',
+  privacyClaim: '写真ファイルはこのデバイスから出ません',
+  privacySubClaim: 'サーバー送信なし · ブラウザ内処理 · オフライン動作',
+  actRetry: '再試行',
+  ariaDropZone: '画像ファイルをドラッグまたはクリックして選択',
+  ariaSelectImage: '画像を選択',
+  ariaRemoveImage: '画像を削除',
+};
 
 const zh: Messages = {
   navTitle: 'ImgPress',
@@ -301,7 +338,15 @@ const zh: Messages = {
   actDownloadZip: 'ZIP下载',
   selectAll: '全选',
   deselectAll: '取消选择',
-  sampleTitle: '直接查看压缩效果',};
+  sampleTitle: '直接查看压缩效果',
+  privacyZeroLabel: '照片泄露概率',
+  privacyClaim: '您的照片不会离开此设备',
+  privacySubClaim: '无服务器上传 · 浏览器内处理 · 离线可用',
+  actRetry: '重试',
+  ariaDropZone: '拖拽图片文件或点击选择',
+  ariaSelectImage: '选择图片',
+  ariaRemoveImage: '删除图片',
+};
 
 const es: Messages = {
   navTitle: 'ImgPress',
@@ -356,7 +401,15 @@ const es: Messages = {
   actDownloadZip: 'Descargar ZIP',
   selectAll: 'Seleccionar todo',
   deselectAll: 'Deseleccionar',
-  sampleTitle: 'Ve el resultado de compresión tú mismo',};
+  sampleTitle: 'Ve el resultado de compresión tú mismo',
+  privacyZeroLabel: 'Probabilidad de fuga',
+  privacyClaim: 'Tus fotos nunca salen de este dispositivo',
+  privacySubClaim: 'Sin subida · Procesado en el navegador · Funciona sin conexión',
+  actRetry: 'Reintentar',
+  ariaDropZone: 'Arrastra archivos o haz clic para seleccionar',
+  ariaSelectImage: 'Seleccionar imagen',
+  ariaRemoveImage: 'Eliminar imagen',
+};
 
 const fr: Messages = {
   navTitle: 'ImgPress',
@@ -412,6 +465,13 @@ const fr: Messages = {
   selectAll: 'Tout sélectionner',
   deselectAll: 'Tout désélectionner',
   sampleTitle: 'Voyez le résultat de compression',
+  privacyZeroLabel: 'Probabilité de fuite',
+  privacyClaim: 'Vos photos ne quittent jamais cet appareil',
+  privacySubClaim: 'Aucun envoi · Traitement local · Fonctionne hors ligne',
+  actRetry: 'Réessayer',
+  ariaDropZone: 'Glissez des fichiers ou cliquez pour sélectionner',
+  ariaSelectImage: "Sélectionner l'image",
+  ariaRemoveImage: "Supprimer l'image",
 };
 
 const de: Messages = {
@@ -468,6 +528,13 @@ const de: Messages = {
   selectAll: 'Alle auswählen',
   deselectAll: 'Auswahl aufheben',
   sampleTitle: 'Sehen Sie das Komprimierungsergebnis',
+  privacyZeroLabel: 'Leak-Wahrscheinlichkeit',
+  privacyClaim: 'Ihre Fotos verlassen niemals dieses Gerät',
+  privacySubClaim: 'Kein Upload · Verarbeitung im Browser · Offline nutzbar',
+  actRetry: 'Wiederholen',
+  ariaDropZone: 'Dateien ziehen oder klicken zum Auswählen',
+  ariaSelectImage: 'Bild auswählen',
+  ariaRemoveImage: 'Bild entfernen',
 };
 
 const pt: Messages = {
@@ -524,6 +591,13 @@ const pt: Messages = {
   selectAll: 'Selecionar tudo',
   deselectAll: 'Desmarcar tudo',
   sampleTitle: 'Veja o resultado da compressão',
+  privacyZeroLabel: 'Probabilidade de vazamento',
+  privacyClaim: 'Suas fotos nunca saem deste dispositivo',
+  privacySubClaim: 'Sem envio · Processado no navegador · Funciona offline',
+  actRetry: 'Tentar novamente',
+  ariaDropZone: 'Arraste arquivos ou clique para selecionar',
+  ariaSelectImage: 'Selecionar imagem',
+  ariaRemoveImage: 'Remover imagem',
 };
 
 const vi: Messages = {
@@ -580,6 +654,13 @@ const vi: Messages = {
   selectAll: 'Chọn tất cả',
   deselectAll: 'Bỏ chọn',
   sampleTitle: 'Xem kết quả nén trực tiếp',
+  privacyZeroLabel: 'Khả năng rò rỉ',
+  privacyClaim: 'Ảnh của bạn không bao giờ rời khỏi thiết bị này',
+  privacySubClaim: 'Không tải lên · Xử lý trong trình duyệt · Hoạt động ngoại tuyến',
+  actRetry: 'Thử lại',
+  ariaDropZone: 'Kéo tệp ảnh hoặc nhấp để chọn',
+  ariaSelectImage: 'Chọn ảnh',
+  ariaRemoveImage: 'Xóa ảnh',
 };
 
 const th: Messages = {
@@ -636,6 +717,13 @@ const th: Messages = {
   selectAll: 'เลือกทั้งหมด',
   deselectAll: 'ยกเลิกการเลือก',
   sampleTitle: 'ดูผลการบีบอัดด้วยตนเอง',
+  privacyZeroLabel: 'โอกาสรั่วไหล',
+  privacyClaim: 'ภาพของคุณไม่เคยออกจากอุปกรณ์นี้',
+  privacySubClaim: 'ไม่อัปโหลด · ประมวลผลในเบราว์เซอร์ · ใช้งานออฟไลน์ได้',
+  actRetry: 'ลองอีกครั้ง',
+  ariaDropZone: 'ลากไฟล์ภาพหรือคลิกเพื่อเลือก',
+  ariaSelectImage: 'เลือกภาพ',
+  ariaRemoveImage: 'ลบภาพ',
 };
 
 export const LOCALES: Record<Locale, { label: string; flag: string }> = {

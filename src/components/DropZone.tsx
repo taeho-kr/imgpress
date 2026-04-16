@@ -29,7 +29,7 @@ export default function DropZone({ onFiles, hasFiles }: Props) {
     <div
       role="button"
       tabIndex={0}
-      aria-label="이미지 파일을 드래그하거나 클릭해서 선택"
+      aria-label={t.ariaDropZone}
       onDragOver={(e) => { stop(e); setOver(true); }}
       onDragEnter={(e) => { stop(e); setOver(true); }}
       onDragLeave={(e) => { stop(e); setOver(false); }}

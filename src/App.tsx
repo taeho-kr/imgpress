@@ -200,12 +200,12 @@ export default function App() {
                 </div>
                 <div className="privacy-main">
                   <div className="privacy-zero">0%</div>
-                  <div className="privacy-label">사진 유출 가능성</div>
+                  <div className="privacy-label">{t.privacyZeroLabel}</div>
                 </div>
                 <div className="privacy-divider" />
                 <div className="privacy-desc-block">
-                  <p className="privacy-claim">사진 파일이 이 기기를 벗어나지 않습니다</p>
-                  <p className="privacy-sub-claim">서버 전송 없음 · 브라우저에서만 처리 · 오프라인 작동</p>
+                  <p className="privacy-claim">{t.privacyClaim}</p>
+                  <p className="privacy-sub-claim">{t.privacySubClaim}</p>
                 </div>
               </div>
             </div>

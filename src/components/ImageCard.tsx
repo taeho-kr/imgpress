@@ -121,7 +121,7 @@ export default function ImageCard({
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(240,91,91,0.25)'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(240,91,91,0.15)'; }}
               >
-                ↺ 재시도
+                ↺ {t.actRetry}
               </button>
             )}
           </div>
@@ -149,7 +149,7 @@ export default function ImageCard({
         {onToggleSelect && status !== 'processing' && (
           <button
             onClick={(e) => { e.stopPropagation(); onToggleSelect(id); }}
-            aria-label="이미지 선택"
+            aria-label={t.ariaSelectImage}
             className={`card-select-btn${selected ? ' card-select-active' : ''}`}
             style={{
               position: 'absolute', bottom: 10, left: 10,
@@ -174,7 +174,7 @@ export default function ImageCard({
         {/* Remove button — revealed on card hover via CSS */}
         <button
           onClick={(e) => { e.stopPropagation(); onRemove(id); }}
-          aria-label="이미지 삭제"
+          aria-label={t.ariaRemoveImage}
           className="card-remove-btn"
           style={{
             position: 'absolute', top: 10, left: 10,
