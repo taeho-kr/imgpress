@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
   type ProcessedImage,
   type ProcessOptions,
@@ -12,6 +12,29 @@ export function useImageStore() {
   const [images, setImages] = useState<ProcessedImage[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  // Batch update accumulator — collects results and flushes once
+  const pendingUpdates = useRef<Map<string, Partial<ProcessedImage>>>(new Map());
+  const flushTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const flushUpdates = useCallback(() => {
+    flushTimer.current = null;
+    const updates = pendingUpdates.current;
+    if (updates.size === 0) return;
+    const snapshot = new Map(updates);
+    updates.clear();
+    setImages((prev) =>
+      prev.map((img) => {
+        const patch = snapshot.get(img.id);
+        return patch ? { ...img, ...patch } : img;
+      }),
+    );
+  }, []);
+
+  const scheduleFlush = useCallback(() => {
+    if (flushTimer.current) return;
+    flushTimer.current = setTimeout(flushUpdates, 16); // ~1 frame
+  }, [flushUpdates]);
 
   const addFiles = useCallback((files: FileList | File[]) => {
     const accepted = Array.from(files).filter((f) => f.type.startsWith('image/'));
@@ -29,21 +52,20 @@ export function useImageStore() {
       status: 'pending' as const,
     }));
 
-    // Generate thumbnails and get dimensions asynchronously
+    // Generate thumbnails asynchronously
     newImages.forEach((item) => {
       generateThumbnail(item.originalFile).then(({ url, width, height }) => {
-        setImages((prev) =>
-          prev.map((p) =>
-            p.id === item.id
-              ? { ...p, thumbnailUrl: url, originalWidth: width, originalHeight: height }
-              : p,
-          ),
-        );
+        pendingUpdates.current.set(item.id, {
+          thumbnailUrl: url,
+          originalWidth: width,
+          originalHeight: height,
+        });
+        scheduleFlush();
       });
     });
 
     setImages((prev) => [...prev, ...newImages]);
-  }, []);
+  }, [scheduleFlush]);
 
   const processAll = useCallback(async (options: ProcessOptions) => {
     setIsProcessing(true);
@@ -74,35 +96,33 @@ export function useImageStore() {
         try {
           const result = await processImage(item.originalFile, options);
           const processedUrl = URL.createObjectURL(result.blob);
-          setImages((curr) =>
-            curr.map((p) =>
-              p.id === item.id
-                ? {
-                    ...p,
-                    processedBlob: result.blob,
-                    processedUrl,
-                    processedWidth: result.width,
-                    processedHeight: result.height,
-                    status: 'done' as const,
-                  }
-                : p,
-            ),
-          );
+          pendingUpdates.current.set(item.id, {
+            processedBlob: result.blob,
+            processedUrl,
+            processedWidth: result.width,
+            processedHeight: result.height,
+            status: 'done' as const,
+          });
         } catch (err) {
-          setImages((curr) =>
-            curr.map((p) =>
-              p.id === item.id
-                ? { ...p, status: 'error' as const, error: String(err) }
-                : p,
-            ),
-          );
+          pendingUpdates.current.set(item.id, {
+            status: 'error' as const,
+            error: String(err),
+          });
         }
+        scheduleFlush();
       }),
     );
 
+    // Final flush to ensure all updates are applied
+    if (flushTimer.current) {
+      clearTimeout(flushTimer.current);
+      flushTimer.current = null;
+    }
+    flushUpdates();
+
     setIsProcessing(false);
     setSelected(new Set());
-  }, [selected]);
+  }, [selected, scheduleFlush, flushUpdates]);
 
   const retryImage = useCallback(async (id: string, options: ProcessOptions) => {
     let targetItem: ProcessedImage | undefined;

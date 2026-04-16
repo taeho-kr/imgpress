@@ -41,107 +41,149 @@ export function compressionRatio(original: number, processed: number): number {
   return Math.round((1 - processed / original) * 100);
 }
 
-// ─── Thumbnail Generation ────────────────────────────────────────────────────
+// ─── Thumbnail Generation (uses createImageBitmap resize) ────────────────────
 
 const THUMB_MAX = 320;
 
 export async function generateThumbnail(file: File): Promise<{ url: string; width: number; height: number }> {
-  const url = URL.createObjectURL(file);
   try {
-    const img = await loadImage(url);
-    const { naturalWidth: w, naturalHeight: h } = img;
+    // Decode to get dimensions
+    const bitmap = await createImageBitmap(file);
+    const { width: w, height: h } = bitmap;
+    bitmap.close();
 
-    // Skip thumbnail if already small enough
+    // Small enough — use original file directly
     if (w <= THUMB_MAX && h <= THUMB_MAX) {
       return { url: URL.createObjectURL(file), width: w, height: h };
     }
 
+    // Use createImageBitmap with resize (offloads work to browser's decoder)
     const scale = Math.min(THUMB_MAX / w, THUMB_MAX / h);
     const tw = Math.round(w * scale);
     const th = Math.round(h * scale);
 
-    const canvas = document.createElement('canvas');
-    canvas.width = tw;
-    canvas.height = th;
-    const ctx = canvas.getContext('2d')!;
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'medium';
-    ctx.drawImage(img, 0, 0, tw, th);
+    const resized = await createImageBitmap(file, {
+      resizeWidth: tw,
+      resizeHeight: th,
+      resizeQuality: 'medium',
+    });
 
-    const blob = await canvasToBlob(canvas, 'image/jpeg', 0.6);
+    // Convert to blob via OffscreenCanvas (if available) or regular canvas
+    let blob: Blob;
+    if (typeof OffscreenCanvas !== 'undefined') {
+      const oc = new OffscreenCanvas(tw, th);
+      const ctx = oc.getContext('2d')!;
+      ctx.drawImage(resized, 0, 0);
+      resized.close();
+      blob = await oc.convertToBlob({ type: 'image/jpeg', quality: 0.6 });
+    } else {
+      const canvas = document.createElement('canvas');
+      canvas.width = tw;
+      canvas.height = th;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(resized, 0, 0);
+      resized.close();
+      blob = await canvasToBlob(canvas, 'image/jpeg', 0.6);
+    }
+
     return { url: URL.createObjectURL(blob), width: w, height: h };
-  } finally {
-    URL.revokeObjectURL(url);
+  } catch {
+    // Fallback: return original file URL without thumbnail
+    return { url: URL.createObjectURL(file), width: 0, height: 0 };
   }
 }
 
-// ─── Worker Pool ──────────────────────────────────────────────────────────────
+// ─── Persistent Worker Pool ──────────────────────────────────────────────────
 
 const supportsWorker =
   typeof Worker !== 'undefined' && typeof OffscreenCanvas !== 'undefined';
 
-const MAX_CONCURRENT = Math.min(
+const POOL_SIZE = Math.min(
   typeof navigator !== 'undefined' ? (navigator.hardwareConcurrency ?? 2) : 2,
-  4,
+  6,
 );
 
-let activeWorkers = 0;
-const waitQueue: Array<() => void> = [];
+interface WorkerTask {
+  file: File;
+  format: string;
+  quality: number;
+  resolve: (result: { blob: Blob; width: number; height: number }) => void;
+  reject: (err: Error) => void;
+}
 
-function acquireSlot(): Promise<void> {
-  if (activeWorkers < MAX_CONCURRENT) {
-    activeWorkers++;
-    return Promise.resolve();
+let workerPool: Worker[] = [];
+let idleWorkers: Worker[] = [];
+const taskQueue: WorkerTask[] = [];
+let poolInitialized = false;
+
+function createWorker(): Worker {
+  return new Worker(
+    new URL('../workers/imageProcessor.worker.ts', import.meta.url),
+    { type: 'module' },
+  );
+}
+
+function initPool(): void {
+  if (poolInitialized) return;
+  poolInitialized = true;
+  for (let i = 0; i < POOL_SIZE; i++) {
+    const w = createWorker();
+    workerPool.push(w);
+    idleWorkers.push(w);
   }
-  return new Promise<void>((resolve) => {
-    waitQueue.push(() => {
-      activeWorkers++;
-      resolve();
-    });
-  });
 }
 
-function releaseSlot(): void {
-  activeWorkers--;
-  const next = waitQueue.shift();
-  if (next) next();
+function dispatch(worker: Worker, task: WorkerTask): void {
+  worker.onmessage = (e: MessageEvent) => {
+    if (e.data.error) {
+      task.reject(new Error(e.data.error));
+    } else {
+      task.resolve({ blob: e.data.blob, width: e.data.width, height: e.data.height });
+    }
+    // Return worker to idle pool and pick next task
+    const next = taskQueue.shift();
+    if (next) {
+      dispatch(worker, next);
+    } else {
+      idleWorkers.push(worker);
+    }
+  };
+  worker.onerror = (e: ErrorEvent) => {
+    task.reject(new Error(e.message || 'Worker error'));
+    // Replace broken worker
+    const idx = workerPool.indexOf(worker);
+    if (idx !== -1) {
+      worker.terminate();
+      const replacement = createWorker();
+      workerPool[idx] = replacement;
+      const next = taskQueue.shift();
+      if (next) {
+        dispatch(replacement, next);
+      } else {
+        idleWorkers.push(replacement);
+      }
+    }
+  };
+  worker.postMessage({ file: task.file, format: task.format, quality: task.quality });
 }
 
-async function processWithWorker(
+function processWithWorker(
   file: File,
   options: ProcessOptions,
 ): Promise<{ blob: Blob; width: number; height: number }> {
-  await acquireSlot();
+  initPool();
   return new Promise((resolve, reject) => {
-    const worker = new Worker(
-      new URL('../workers/imageProcessor.worker.ts', import.meta.url),
-      { type: 'module' },
-    );
-    worker.onmessage = (e: MessageEvent) => {
-      worker.terminate();
-      releaseSlot();
-      if (e.data.error) reject(new Error(e.data.error));
-      else resolve({ blob: e.data.blob, width: e.data.width, height: e.data.height });
-    };
-    worker.onerror = (e: ErrorEvent) => {
-      worker.terminate();
-      releaseSlot();
-      reject(new Error(e.message || 'Worker error'));
-    };
-    worker.postMessage({ file, format: options.format, quality: options.quality });
+    const task: WorkerTask = { file, format: options.format, quality: options.quality, resolve, reject };
+    const worker = idleWorkers.pop();
+    if (worker) {
+      dispatch(worker, task);
+    } else {
+      taskQueue.push(task);
+    }
   });
 }
 
 // ─── Main Thread Fallback ─────────────────────────────────────────────────────
-
-function loadImage(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error('Failed to load image'));
-    img.src = src;
-  });
-}
 
 function canvasToBlob(canvas: HTMLCanvasElement, format: string, quality: number): Promise<Blob> {
   return new Promise((resolve, reject) => {
@@ -160,22 +202,16 @@ async function processOnMainThread(
   file: File,
   options: ProcessOptions,
 ): Promise<{ blob: Blob; width: number; height: number }> {
-  const url = URL.createObjectURL(file);
-  try {
-    const img = await loadImage(url);
-    const { naturalWidth: width, naturalHeight: height } = img;
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext('2d')!;
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(img, 0, 0, width, height);
-    const blob = await canvasToBlob(canvas, options.format, options.quality);
-    return { blob, width, height };
-  } finally {
-    URL.revokeObjectURL(url);
-  }
+  const bitmap = await createImageBitmap(file);
+  const { width, height } = bitmap;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(bitmap, 0, 0);
+  bitmap.close();
+  const blob = await canvasToBlob(canvas, options.format, options.quality);
+  return { blob, width, height };
 }
 
 // ─── Public API ───────────────────────────────────────────────────────────────
