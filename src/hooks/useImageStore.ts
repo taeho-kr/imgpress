@@ -5,6 +5,7 @@ import {
   processImage,
   generateThumbnail,
 } from '../utils/imageProcessor';
+import { readMetadata } from '../utils/metadata';
 
 let nextId = 0;
 
@@ -52,13 +53,21 @@ export function useImageStore() {
       status: 'pending' as const,
     }));
 
-    // Generate thumbnails asynchronously
+    // Generate thumbnails + read privacy metadata asynchronously
     newImages.forEach((item) => {
       generateThumbnail(item.originalFile).then(({ url, width, height }) => {
         pendingUpdates.current.set(item.id, {
+          ...pendingUpdates.current.get(item.id),
           thumbnailUrl: url,
           originalWidth: width,
           originalHeight: height,
+        });
+        scheduleFlush();
+      });
+      readMetadata(item.originalFile).then((meta) => {
+        pendingUpdates.current.set(item.id, {
+          ...pendingUpdates.current.get(item.id),
+          originalMeta: meta,
         });
         scheduleFlush();
       });

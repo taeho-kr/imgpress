@@ -17,4 +17,16 @@ export default defineConfig({
   worker: {
     format: 'es',
   },
+  // @jsquash codecs locate their .wasm via `new URL(..., import.meta.url)`.
+  // Vite's prod build (Rollup) handles that natively, but the dev pre-bundler
+  // (esbuild) breaks it — so exclude them from optimizeDeps in dev.
+  optimizeDeps: {
+    exclude: [
+      '@jsquash/jpeg',
+      '@jsquash/webp',
+      '@jsquash/png',
+      '@jsquash/avif',
+      '@jsquash/oxipng',
+    ],
+  },
 })

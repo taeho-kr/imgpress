@@ -94,9 +94,39 @@ export interface Messages {
   ariaDropZone: string;
   ariaSelectImage: string;
   ariaRemoveImage: string;
+
+  // Privacy receipt (Phase 2)
+  receiptTitle: string;
+  receiptLocation: string;
+  receiptCamera: string;
+  receiptDate: string;
+  receiptRemoved: string;
+  receiptNeverUploaded: string;
+  receiptNone: string;
+  cardMetaRemoved: string;
+
+  // Target quality presets (Phase 3)
+  optTargetLabel: string;
+  targetLossless: string;
+  targetHigh: string;
+  targetSmall: string;
+  optAdvanced: string;
 }
 
 const ko: Messages = {
+  receiptTitle: '개인정보 영수증',
+  receiptLocation: '위치(GPS)',
+  receiptCamera: '카메라',
+  receiptDate: '촬영 시각',
+  receiptRemoved: '메타데이터 제거됨',
+  receiptNeverUploaded: '업로드된 적 없음',
+  receiptNone: '숨겨진 메타데이터 없음 · 업로드된 적 없음',
+  cardMetaRemoved: '메타데이터 제거됨',
+  optTargetLabel: '목표 품질',
+  targetLossless: '시각적 무손실',
+  targetHigh: '높음',
+  targetSmall: '작게',
+  optAdvanced: '고급 설정',
   navTitle: 'ImgPress',
   navPrivacy: '서버 전송 없음',
   eyebrow: '무료 · 오프라인 · 프라이버시',
@@ -113,7 +143,7 @@ const ko: Messages = {
   featurePrivacyTitle: '완전한 프라이버시',
   featurePrivacyDesc: '이미지가 기기를 벗어나지 않습니다. 서버 업로드 없음.',
   featureSpeedTitle: '즉시 변환',
-  featureSpeedDesc: 'Canvas API 기반 네이티브 처리. 설치 필요 없음.',
+  featureSpeedDesc: 'WASM 코덱 기반 고속 처리. 설치 필요 없음.',
   featureBatchTitle: '일괄 처리',
   featureBatchDesc: '여러 이미지를 동시에 변환. WebP·JPEG·PNG 지원.',
   trustFree: '100% 무료',
@@ -160,6 +190,19 @@ const ko: Messages = {
 };
 
 const en: Messages = {
+  receiptTitle: 'Privacy receipt',
+  receiptLocation: 'Location',
+  receiptCamera: 'Camera',
+  receiptDate: 'Date taken',
+  receiptRemoved: 'Metadata removed',
+  receiptNeverUploaded: 'never uploaded',
+  receiptNone: 'No hidden metadata found · nothing was uploaded',
+  cardMetaRemoved: 'Metadata removed',
+  optTargetLabel: 'Target Quality',
+  targetLossless: 'Visually Lossless',
+  targetHigh: 'High',
+  targetSmall: 'Small',
+  optAdvanced: 'Advanced',
   navTitle: 'ImgPress',
   navPrivacy: 'No server upload',
   eyebrow: 'Free · Offline · Private',
@@ -176,7 +219,7 @@ const en: Messages = {
   featurePrivacyTitle: 'Full Privacy',
   featurePrivacyDesc: 'Images never leave your device. No server upload.',
   featureSpeedTitle: 'Instant',
-  featureSpeedDesc: 'Native Canvas API processing. No install needed.',
+  featureSpeedDesc: 'Fast WebAssembly codec processing. No install needed.',
   featureBatchTitle: 'Batch Process',
   featureBatchDesc: 'Compress multiple images at once. WebP·JPEG·PNG.',
   trustFree: '100% Free',
@@ -223,6 +266,19 @@ const en: Messages = {
 };
 
 const ja: Messages = {
+  receiptTitle: 'プライバシー証明',
+  receiptLocation: '位置情報',
+  receiptCamera: 'カメラ',
+  receiptDate: '撮影日時',
+  receiptRemoved: 'メタデータを削除',
+  receiptNeverUploaded: 'アップロードなし',
+  receiptNone: '隠れたメタデータなし · アップロードなし',
+  cardMetaRemoved: 'メタデータ削除済み',
+  optTargetLabel: '目標品質',
+  targetLossless: '視覚的ロスレス',
+  targetHigh: '高',
+  targetSmall: '小',
+  optAdvanced: '詳細設定',
   navTitle: 'ImgPress',
   navPrivacy: 'サーバー送信なし',
   eyebrow: '無料 · オフライン · プライバシー',
@@ -239,7 +295,7 @@ const ja: Messages = {
   featurePrivacyTitle: '完全なプライバシー',
   featurePrivacyDesc: '画像はデバイスから離れません。サーバーアップロードなし。',
   featureSpeedTitle: '即時変換',
-  featureSpeedDesc: 'Canvas APIによるネイティブ処理。インストール不要。',
+  featureSpeedDesc: 'WASMコーデックによる高速処理。インストール不要。',
   featureBatchTitle: '一括処理',
   featureBatchDesc: '複数の画像を同時に変換。WebP·JPEG·PNG対応。',
   trustFree: '完全無料',
@@ -286,6 +342,19 @@ const ja: Messages = {
 };
 
 const zh: Messages = {
+  receiptTitle: '隐私凭证',
+  receiptLocation: '位置信息',
+  receiptCamera: '相机',
+  receiptDate: '拍摄时间',
+  receiptRemoved: '元数据已移除',
+  receiptNeverUploaded: '从未上传',
+  receiptNone: '未发现隐藏元数据 · 从未上传',
+  cardMetaRemoved: '元数据已移除',
+  optTargetLabel: '目标质量',
+  targetLossless: '视觉无损',
+  targetHigh: '高',
+  targetSmall: '小',
+  optAdvanced: '高级',
   navTitle: 'ImgPress',
   navPrivacy: '无服务器上传',
   eyebrow: '免费 · 离线 · 隐私',
@@ -302,7 +371,7 @@ const zh: Messages = {
   featurePrivacyTitle: '完全隐私',
   featurePrivacyDesc: '图片不会离开您的设备。无服务器上传。',
   featureSpeedTitle: '即时转换',
-  featureSpeedDesc: '基于Canvas API的原生处理。无需安装。',
+  featureSpeedDesc: '基于 WASM 编解码器的高速处理。无需安装。',
   featureBatchTitle: '批量处理',
   featureBatchDesc: '同时转换多张图片。支持WebP·JPEG·PNG。',
   trustFree: '100%免费',
@@ -349,6 +418,19 @@ const zh: Messages = {
 };
 
 const es: Messages = {
+  receiptTitle: 'Recibo de privacidad',
+  receiptLocation: 'Ubicación',
+  receiptCamera: 'Cámara',
+  receiptDate: 'Fecha de captura',
+  receiptRemoved: 'Metadatos eliminados',
+  receiptNeverUploaded: 'nunca se subió',
+  receiptNone: 'No se encontraron metadatos ocultos · no se subió nada',
+  cardMetaRemoved: 'Metadatos eliminados',
+  optTargetLabel: 'Calidad objetivo',
+  targetLossless: 'Sin pérdida visible',
+  targetHigh: 'Alta',
+  targetSmall: 'Pequeño',
+  optAdvanced: 'Avanzado',
   navTitle: 'ImgPress',
   navPrivacy: 'Sin subida al servidor',
   eyebrow: 'Gratis · Sin conexión · Privado',
@@ -365,7 +447,7 @@ const es: Messages = {
   featurePrivacyTitle: 'Privacidad total',
   featurePrivacyDesc: 'Las imágenes nunca salen de tu dispositivo.',
   featureSpeedTitle: 'Instantáneo',
-  featureSpeedDesc: 'Procesamiento nativo con Canvas API. Sin instalación.',
+  featureSpeedDesc: 'Procesamiento rápido con códecs WASM. Sin instalación.',
   featureBatchTitle: 'Procesamiento por lotes',
   featureBatchDesc: 'Comprime varias imágenes a la vez. WebP·JPEG·PNG.',
   trustFree: '100% Gratis',
@@ -412,6 +494,19 @@ const es: Messages = {
 };
 
 const fr: Messages = {
+  receiptTitle: 'Reçu de confidentialité',
+  receiptLocation: 'Localisation',
+  receiptCamera: 'Appareil photo',
+  receiptDate: 'Date de prise',
+  receiptRemoved: 'Métadonnées supprimées',
+  receiptNeverUploaded: 'jamais envoyé',
+  receiptNone: 'Aucune métadonnée cachée · rien n’a été envoyé',
+  cardMetaRemoved: 'Métadonnées supprimées',
+  optTargetLabel: 'Qualité cible',
+  targetLossless: 'Sans perte visible',
+  targetHigh: 'Élevée',
+  targetSmall: 'Petit',
+  optAdvanced: 'Avancé',
   navTitle: 'ImgPress',
   navPrivacy: 'Aucun envoi serveur',
   eyebrow: 'Gratuit · Hors ligne · Privé',
@@ -428,7 +523,7 @@ const fr: Messages = {
   featurePrivacyTitle: 'Confidentialité totale',
   featurePrivacyDesc: 'Les images ne quittent jamais votre appareil.',
   featureSpeedTitle: 'Instantané',
-  featureSpeedDesc: 'Traitement natif via Canvas API. Aucune installation.',
+  featureSpeedDesc: 'Traitement rapide via codecs WASM. Aucune installation.',
   featureBatchTitle: 'Traitement par lots',
   featureBatchDesc: 'Compressez plusieurs images à la fois. WebP·JPEG·PNG.',
   trustFree: '100% Gratuit',
@@ -475,6 +570,19 @@ const fr: Messages = {
 };
 
 const de: Messages = {
+  receiptTitle: 'Datenschutz-Beleg',
+  receiptLocation: 'Standort',
+  receiptCamera: 'Kamera',
+  receiptDate: 'Aufnahmedatum',
+  receiptRemoved: 'Metadaten entfernt',
+  receiptNeverUploaded: 'nie hochgeladen',
+  receiptNone: 'Keine versteckten Metadaten · nichts hochgeladen',
+  cardMetaRemoved: 'Metadaten entfernt',
+  optTargetLabel: 'Zielqualität',
+  targetLossless: 'Visuell verlustfrei',
+  targetHigh: 'Hoch',
+  targetSmall: 'Klein',
+  optAdvanced: 'Erweitert',
   navTitle: 'ImgPress',
   navPrivacy: 'Kein Server-Upload',
   eyebrow: 'Kostenlos · Offline · Privat',
@@ -491,7 +599,7 @@ const de: Messages = {
   featurePrivacyTitle: 'Volle Privatsphäre',
   featurePrivacyDesc: 'Bilder verlassen niemals Ihr Gerät.',
   featureSpeedTitle: 'Sofort',
-  featureSpeedDesc: 'Native Canvas API-Verarbeitung. Keine Installation.',
+  featureSpeedDesc: 'Schnelle Verarbeitung mit WASM-Codecs. Keine Installation.',
   featureBatchTitle: 'Stapelverarbeitung',
   featureBatchDesc: 'Mehrere Bilder gleichzeitig komprimieren. WebP·JPEG·PNG.',
   trustFree: '100% Kostenlos',
@@ -538,6 +646,19 @@ const de: Messages = {
 };
 
 const pt: Messages = {
+  receiptTitle: 'Recibo de privacidade',
+  receiptLocation: 'Localização',
+  receiptCamera: 'Câmera',
+  receiptDate: 'Data da captura',
+  receiptRemoved: 'Metadados removidos',
+  receiptNeverUploaded: 'nunca enviado',
+  receiptNone: 'Nenhum metadado oculto · nada foi enviado',
+  cardMetaRemoved: 'Metadados removidos',
+  optTargetLabel: 'Qualidade alvo',
+  targetLossless: 'Sem perda visível',
+  targetHigh: 'Alta',
+  targetSmall: 'Pequeno',
+  optAdvanced: 'Avançado',
   navTitle: 'ImgPress',
   navPrivacy: 'Sem envio ao servidor',
   eyebrow: 'Grátis · Offline · Privado',
@@ -554,7 +675,7 @@ const pt: Messages = {
   featurePrivacyTitle: 'Privacidade total',
   featurePrivacyDesc: 'As imagens nunca saem do seu dispositivo.',
   featureSpeedTitle: 'Instantâneo',
-  featureSpeedDesc: 'Processamento nativo com Canvas API. Sem instalação.',
+  featureSpeedDesc: 'Processamento rápido com códecs WASM. Sem instalação.',
   featureBatchTitle: 'Processamento em lote',
   featureBatchDesc: 'Comprima várias imagens de uma vez. WebP·JPEG·PNG.',
   trustFree: '100% Grátis',
@@ -601,6 +722,19 @@ const pt: Messages = {
 };
 
 const vi: Messages = {
+  receiptTitle: 'Biên nhận quyền riêng tư',
+  receiptLocation: 'Vị trí',
+  receiptCamera: 'Máy ảnh',
+  receiptDate: 'Ngày chụp',
+  receiptRemoved: 'Đã xóa siêu dữ liệu',
+  receiptNeverUploaded: 'không hề tải lên',
+  receiptNone: 'Không có siêu dữ liệu ẩn · không tải lên gì',
+  cardMetaRemoved: 'Đã xóa siêu dữ liệu',
+  optTargetLabel: 'Chất lượng mục tiêu',
+  targetLossless: 'Không mất chất lượng',
+  targetHigh: 'Cao',
+  targetSmall: 'Nhỏ',
+  optAdvanced: 'Nâng cao',
   navTitle: 'ImgPress',
   navPrivacy: 'Không tải lên máy chủ',
   eyebrow: 'Miễn phí · Ngoại tuyến · Riêng tư',
@@ -617,7 +751,7 @@ const vi: Messages = {
   featurePrivacyTitle: 'Riêng tư hoàn toàn',
   featurePrivacyDesc: 'Ảnh không bao giờ rời khỏi thiết bị của bạn.',
   featureSpeedTitle: 'Tức thì',
-  featureSpeedDesc: 'Xử lý gốc bằng Canvas API. Không cần cài đặt.',
+  featureSpeedDesc: 'Xử lý nhanh bằng codec WASM. Không cần cài đặt.',
   featureBatchTitle: 'Xử lý hàng loạt',
   featureBatchDesc: 'Nén nhiều ảnh cùng lúc. WebP·JPEG·PNG.',
   trustFree: 'Miễn phí 100%',
@@ -664,6 +798,19 @@ const vi: Messages = {
 };
 
 const th: Messages = {
+  receiptTitle: 'ใบรับรองความเป็นส่วนตัว',
+  receiptLocation: 'ตำแหน่งที่ตั้ง',
+  receiptCamera: 'กล้อง',
+  receiptDate: 'วันที่ถ่าย',
+  receiptRemoved: 'ลบข้อมูลเมตาแล้ว',
+  receiptNeverUploaded: 'ไม่เคยอัปโหลด',
+  receiptNone: 'ไม่พบข้อมูลเมตาที่ซ่อนอยู่ · ไม่มีการอัปโหลด',
+  cardMetaRemoved: 'ลบข้อมูลเมตาแล้ว',
+  optTargetLabel: 'คุณภาพเป้าหมาย',
+  targetLossless: 'ไม่สูญเสียที่มองเห็น',
+  targetHigh: 'สูง',
+  targetSmall: 'เล็ก',
+  optAdvanced: 'ขั้นสูง',
   navTitle: 'ImgPress',
   navPrivacy: 'ไม่อัปโหลดไปเซิร์ฟเวอร์',
   eyebrow: 'ฟรี · ออฟไลน์ · ส่วนตัว',
@@ -680,7 +827,7 @@ const th: Messages = {
   featurePrivacyTitle: 'ความเป็นส่วนตัวเต็มที่',
   featurePrivacyDesc: 'รูปภาพไม่ออกจากอุปกรณ์ของคุณ',
   featureSpeedTitle: 'ทันที',
-  featureSpeedDesc: 'ประมวลผลด้วย Canvas API ไม่ต้องติดตั้ง',
+  featureSpeedDesc: 'ประมวลผลเร็วด้วยตัวแปลงสัญญาณ WASM ไม่ต้องติดตั้ง',
   featureBatchTitle: 'ประมวลผลเป็นชุด',
   featureBatchDesc: 'บีบอัดหลายภาพพร้อมกัน WebP·JPEG·PNG',
   trustFree: 'ฟรี 100%',

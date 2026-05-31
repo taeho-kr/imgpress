@@ -22,10 +22,13 @@ function loadOptions(): ProcessOptions {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed.quality && parsed.format) return parsed;
+      if (parsed.quality && parsed.format) {
+        // Migrate pre-preset saved options: no `mode` → treat as custom quality.
+        return { mode: 'custom', ...parsed } as ProcessOptions;
+      }
     }
   } catch { /* ignore */ }
-  return { quality: 0.8, format: 'image/webp' };
+  return { quality: 0.8, format: 'image/webp', mode: 'high' };
 }
 
 export default function App() {
@@ -277,6 +280,7 @@ export default function App() {
                       onCompare={() => img.status === 'done' && img.processedUrl && setCompareImg(img)}
                       selected={selected.has(img.id)}
                       onToggleSelect={toggleSelect}
+                      originalMeta={img.originalMeta}
                     />
                   </div>
                 ))}
@@ -328,7 +332,7 @@ export default function App() {
           <div style={{ maxWidth: 1152, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>{t.footer}</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>Canvas API · No WASM · No Upload</span>
+              <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>MozJPEG · WebP · AVIF · No Upload</span>
               <button
                 onClick={() => setShowPrivacy(true)}
                 style={{ fontSize: 11, color: 'var(--text-ghost)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, transition: 'color 0.15s ease' }}
@@ -371,6 +375,8 @@ export default function App() {
           processedWidth={compareImg.processedWidth}
           processedHeight={compareImg.processedHeight}
           fileName={compareImg.originalFile.name}
+          originalMeta={compareImg.originalMeta}
+          processedBlob={compareImg.processedBlob}
           onClose={() => setCompareImg(null)}
         />
       )}

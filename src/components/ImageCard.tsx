@@ -1,4 +1,5 @@
 import { formatBytes, compressionRatio, getOutputFilename } from '../utils/imageProcessor';
+import { type ImageMeta, hasSensitiveMeta } from '../utils/metadata';
 import { useI18n } from '../i18n/useI18n';
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
   format: string;
   selected?: boolean;
   onToggleSelect?: (id: string) => void;
+  originalMeta?: ImageMeta | null;
 }
 
 export default function ImageCard({
@@ -28,7 +30,7 @@ export default function ImageCard({
   processedBlob, processedUrl,
   processedWidth, processedHeight,
   status, onRemove, onRetry, onCompare, format,
-  selected, onToggleSelect,
+  selected, onToggleSelect, originalMeta,
 }: Props) {
   const { t } = useI18n();
   const ratio = processedBlob ? compressionRatio(originalFile.size, processedBlob.size) : 0;
@@ -243,6 +245,16 @@ export default function ImageCard({
             )}
           </StatBox>
         </div>
+
+        {/* Privacy proof hint — visible only when the original carried metadata */}
+        {status === 'done' && hasSensitiveMeta(originalMeta) && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 9, fontSize: 10.5, fontWeight: 600, color: 'var(--success)', letterSpacing: '-0.005em' }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><polyline points="9 12 11 14 15 10" />
+            </svg>
+            {t.cardMetaRemoved}
+          </div>
+        )}
 
         {/* Download */}
         {status === 'done' && processedBlob && (

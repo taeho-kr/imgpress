@@ -1,4 +1,4 @@
-import type { ProcessOptions } from '../utils/imageProcessor';
+import { type ProcessOptions, type QualityMode, MODE_QUALITY } from '../utils/imageProcessor';
 import { useI18n } from '../i18n/useI18n';
 
 interface Props {
@@ -17,8 +17,15 @@ interface Props {
 
 const FORMATS = [
   { value: 'image/webp' as const, label: 'WebP', hintKey: true },
+  { value: 'image/avif' as const, label: 'AVIF', hintKey: false },
   { value: 'image/jpeg' as const, label: 'JPEG', hintKey: false },
   { value: 'image/png' as const, label: 'PNG', hintKey: false },
+];
+
+const TARGETS: { mode: Exclude<QualityMode, 'custom'>; labelKey: 'targetLossless' | 'targetHigh' | 'targetSmall' }[] = [
+  { mode: 'lossless', labelKey: 'targetLossless' },
+  { mode: 'high', labelKey: 'targetHigh' },
+  { mode: 'small', labelKey: 'targetSmall' },
 ];
 
 
@@ -49,7 +56,7 @@ export default function OptionsPanel({
       <Section label={t.optFormat}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: `repeat(${FORMATS.length}, 1fr)`,
           gap: 4,
           background: 'rgba(255,255,255,0.03)',
           borderRadius: 10,
@@ -98,62 +105,90 @@ export default function OptionsPanel({
         </div>
       </Section>
 
-      {/* Quality */}
-      <Section
-        label={t.optQuality}
-        right={
-          <span style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 12,
-            fontWeight: 500,
-            color: 'var(--accent)',
-            background: 'var(--accent-dim)',
-            border: '1px solid var(--accent-border)',
-            padding: '2px 8px',
-            borderRadius: 6,
-            letterSpacing: '-0.01em',
-          }}>
-            {qualityPct}%
-          </span>
-        }
-      >
-        <div style={{ position: 'relative' }}>
-          {/* Visual fill track behind the range input */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: 0,
-            transform: 'translateY(-50%)',
-            height: 3,
-            width: trackFill,
-            borderRadius: 2,
-            background: 'linear-gradient(90deg, rgba(232,160,48,0.4), var(--accent))',
-            pointerEvents: 'none',
-            zIndex: 1,
-            transition: 'width 0.1s ease',
-          }} />
-          <input
-            type="range"
-            min={0.1}
-            max={1}
-            step={0.05}
-            value={options.quality}
-            onChange={(e) => set('quality', Number(e.target.value))}
-            style={{ width: '100%', position: 'relative', zIndex: 2 }}
-          />
-        </div>
+      {/* Target — perceptual intent presets (replaces the meaningless % slider) */}
+      <Section label={t.optTargetLabel}>
         <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginTop: 6,
-          fontSize: 10,
-          color: 'var(--text-ghost)',
-          letterSpacing: '0.02em',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 4,
+          background: 'rgba(255,255,255,0.03)',
+          borderRadius: 10,
+          padding: 4,
         }}>
-          <span>{t.optQualityLow}</span>
-          <span>{t.optQualityHigh}</span>
+          {TARGETS.map(({ mode, labelKey }) => {
+            const active = options.mode === mode;
+            return (
+              <button
+                key={mode}
+                onClick={() => onChange({ ...options, mode, quality: MODE_QUALITY[mode] })}
+                style={{
+                  padding: '8px 4px',
+                  borderRadius: 7,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  letterSpacing: '-0.01em',
+                  cursor: 'pointer',
+                  border: 'none',
+                  transition: 'all 0.15s ease',
+                  background: active ? 'rgba(255,255,255,0.1)' : 'transparent',
+                  color: active ? 'var(--text-primary)' : 'var(--text-muted)',
+                  boxShadow: active
+                    ? '0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)'
+                    : 'none',
+                }}
+              >
+                {t[labelKey]}
+              </button>
+            );
+          })}
         </div>
       </Section>
+
+      {/* Advanced — raw quality slider for power users (sets custom mode) */}
+      <details>
+        <summary style={{
+          fontSize: 10, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase',
+          color: 'var(--text-ghost)', cursor: 'pointer', userSelect: 'none', listStyle: 'revert',
+        }}>
+          {t.optAdvanced}
+        </summary>
+        <div style={{ marginTop: 12 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+            <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: 'var(--text-ghost)' }}>
+              {t.optQuality}
+            </span>
+            <span style={{
+              fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 500,
+              color: options.mode === 'custom' ? 'var(--accent)' : 'var(--text-muted)',
+              background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
+              padding: '2px 8px', borderRadius: 6, letterSpacing: '-0.01em',
+            }}>
+              {qualityPct}%
+            </span>
+          </div>
+          <div style={{ position: 'relative' }}>
+            <div style={{
+              position: 'absolute', top: '50%', left: 0, transform: 'translateY(-50%)',
+              height: 3, width: trackFill, borderRadius: 2,
+              background: 'linear-gradient(90deg, rgba(232,160,48,0.4), var(--accent))',
+              pointerEvents: 'none', zIndex: 1, transition: 'width 0.1s ease',
+            }} />
+            <input
+              type="range"
+              min={0.1}
+              max={1}
+              step={0.05}
+              value={options.quality}
+              onChange={(e) => onChange({ ...options, quality: Number(e.target.value), mode: 'custom' })}
+              style={{ width: '100%', position: 'relative', zIndex: 2 }}
+            />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 10, color: 'var(--text-ghost)', letterSpacing: '0.02em' }}>
+            <span>{t.optQualityLow}</span>
+            <span>{t.optQualityHigh}</span>
+          </div>
+        </div>
+      </details>
 
       {/* Selection */}
       {imageCount > 1 && (

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { formatBytes, compressionRatio } from '../utils/imageProcessor';
+import { type ImageMeta, hasSensitiveMeta, countOutputTags } from '../utils/metadata';
 import { useI18n } from '../i18n/useI18n';
 
 interface Props {
@@ -13,6 +14,8 @@ interface Props {
   processedHeight: number;
   fileName: string;
   onClose: () => void;
+  originalMeta?: ImageMeta | null;
+  processedBlob?: Blob | null;
 }
 
 export default function CompareModal({
@@ -20,11 +23,20 @@ export default function CompareModal({
   originalSize, processedSize,
   originalWidth, originalHeight,
   processedWidth, processedHeight,
-  fileName, onClose,
+  fileName, onClose, originalMeta, processedBlob,
 }: Props) {
   const { t } = useI18n();
   const [showOriginal, setShowOriginal] = useState(false);
   const ratio = compressionRatio(originalSize, processedSize);
+  const showReceipt = hasSensitiveMeta(originalMeta);
+
+  // Genuinely verify the output by re-parsing it — the proof is measured, not claimed.
+  const [outputTags, setOutputTags] = useState<number | null>(null);
+  useEffect(() => {
+    let live = true;
+    if (processedBlob) countOutputTags(processedBlob).then((n) => { if (live) setOutputTags(n); });
+    return () => { live = false; };
+  }, [processedBlob]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -164,7 +176,62 @@ export default function CompareModal({
           <Stat label={t.compareCompressed} value={formatBytes(processedSize)} sub={`${processedWidth}×${processedHeight}`} accent highlight={!showOriginal} />
           <Stat label={t.compareSaved} value={formatBytes(originalSize - processedSize)} sub={`${Math.abs(ratio)}% ${t.compareReduction}`} accent />
         </div>
+
+        {/* Privacy receipt — show what the original leaked, prove it's gone */}
+        <div style={{
+          padding: '14px 20px',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+          background: 'rgba(52,201,138,0.04)',
+        }}>
+          {showReceipt ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-ghost)' }}>
+                {t.receiptTitle}
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {originalMeta?.gps && (
+                  <ReceiptChip label={t.receiptLocation} value={`${originalMeta.gps.lat.toFixed(4)}, ${originalMeta.gps.lng.toFixed(4)}`} />
+                )}
+                {originalMeta?.camera && <ReceiptChip label={t.receiptCamera} value={originalMeta.camera} />}
+                {originalMeta?.dateTime && <ReceiptChip label={t.receiptDate} value={originalMeta.dateTime} />}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12.5, fontWeight: 600, color: outputTags ? 'var(--error)' : 'var(--success)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><polyline points="9 12 11 14 15 10" />
+                </svg>
+                {t.receiptRemoved} · {t.receiptNeverUploaded}
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: 'var(--text-muted)' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              {t.receiptNone}
+            </div>
+          )}
+        </div>
       </div>
+    </div>
+  );
+}
+
+function ReceiptChip({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 1,
+      padding: '5px 10px', borderRadius: 7,
+      background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
+    }}>
+      <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-ghost)' }}>
+        {label}
+      </span>
+      <span style={{
+        fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-muted)',
+        textDecoration: 'line-through', textDecorationColor: 'var(--success)',
+      }}>
+        {value}
+      </span>
     </div>
   );
 }

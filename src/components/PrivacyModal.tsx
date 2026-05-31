@@ -95,7 +95,11 @@ export default function PrivacyModal({ onClose }: Props) {
           </Section>
 
           <Section title="Image Processing">
-            <p>All image compression and conversion is performed using your browser's built-in Canvas API and Web Workers. Files are processed entirely on your device. No image data is transmitted over the network at any point.</p>
+            <p>All image compression and conversion is performed inside your browser using WebAssembly codecs (MozJPEG, WebP, AVIF, OxiPNG) running in Web Workers. Files are processed entirely on your device. No image data is transmitted over the network at any point.</p>
+          </Section>
+
+          <Section title="Metadata Removal">
+            <p>Because every image is re-encoded from raw pixels, all embedded metadata — including <strong style={{ color: 'var(--success)' }}>GPS location, camera model, and timestamps</strong> — is permanently removed from the output. ImgPress shows you exactly what your original file was revealing and verifies, on your device, that the result carries none of it.</p>
           </Section>
 
           <Section title="Analytics">

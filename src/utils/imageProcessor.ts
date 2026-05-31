@@ -1,6 +1,22 @@
+import { encodeImageData, type OutputFormat } from './codecEncode';
+import type { ImageMeta } from './metadata';
+
+// Perceptual-intent presets replace the meaningless raw % slider as the primary
+// control. Values are calibrated against SSIMULACRA2 (see scripts/poc): for
+// MozJPEG, q0.90≈score 88 (visually lossless), q0.80≈71 (high), q0.62≈medium.
+// 'custom' = the user dragged the raw quality slider in Advanced.
+export type QualityMode = 'lossless' | 'high' | 'small' | 'custom';
+
+export const MODE_QUALITY: Record<Exclude<QualityMode, 'custom'>, number> = {
+  lossless: 0.92,
+  high: 0.8,
+  small: 0.62,
+};
+
 export interface ProcessOptions {
-  quality: number; // 0.0 ~ 1.0
-  format: 'image/jpeg' | 'image/png' | 'image/webp';
+  quality: number; // 0.0 ~ 1.0 — derived from `mode` unless mode === 'custom'
+  format: OutputFormat;
+  mode: QualityMode;
 }
 
 export interface ProcessedImage {
@@ -16,12 +32,15 @@ export interface ProcessedImage {
   processedHeight: number;
   status: 'pending' | 'processing' | 'done' | 'error';
   error?: string;
+  originalMeta?: ImageMeta | null; // privacy metadata read from the original
+  outputTags?: number | null;      // metadata tags surviving in the output (proof: 0)
 }
 
 const FORMAT_EXT: Record<string, string> = {
   'image/jpeg': '.jpg',
   'image/png': '.png',
   'image/webp': '.webp',
+  'image/avif': '.avif',
 };
 
 export function getOutputFilename(originalName: string, format: string): string {
@@ -207,10 +226,12 @@ async function processOnMainThread(
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
   ctx.drawImage(bitmap, 0, 0);
   bitmap.close();
-  const blob = await canvasToBlob(canvas, options.format, options.quality);
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const buffer = await encodeImageData(imageData, options.format as OutputFormat, options.quality);
+  const blob = new Blob([buffer], { type: options.format });
   return { blob, width, height };
 }
 
